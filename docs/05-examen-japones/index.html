@@ -23,19 +23,16 @@
 <button onclick="submitExam()">Finalizar</button>
 <div id="result"></div>
 <script>
-const xmlPath = 'examen-japones-qti-francisco-rivas-jimenez.xml';
+const xmlPath = '/proyecto-final-japones-pmed-francisco-rivas-jimenez/05-examen-japones/examen-japones-qti-francisco-rivas-jimenez.xml';
 let questions = [];
-
 // Para devolver el array de preguntas parseadas (de cada tipo)
 function parseQuestions(xml) {
   const items = Array.from(xml.getElementsByTagName('assessmentItem'));
   const nsResolver = xml.createNSResolver(xml.documentElement);
-
   return items.map((item, idx) => {
     const title = item.getAttribute('title');
     const identifier = item.getAttribute('identifier') || `q${idx + 1}`;
     const bodyP = item.getElementsByTagName('p')[0]?.textContent || '';
-
     // Tipo simpleChoice (selección multiple)
     if (item.getElementsByTagName('choiceInteraction')[0]) {
       const choices = Array.from(item.getElementsByTagName('simpleChoice'))
@@ -49,7 +46,6 @@ function parseQuestions(xml) {
         title, body: bodyP, choices, correct, id: identifier
       };
     }
-
     // Tipo inlineChoice (completar con múltiples opciones)
     if (item.getElementsByTagName('inlineChoiceInteraction')[0]) {
       const inChoices = Array.from(item.getElementsByTagName('inlineChoice'))
@@ -70,7 +66,6 @@ function parseQuestions(xml) {
         title, body: bodyP, choices: inChoices, correct, frase, after, id: identifier
       };
     }
-
     // Tipo matching (emparejar vocabulario)
     if (item.getElementsByTagName('matchInteraction')[0]) {
       const matchSets = item.getElementsByTagName('simpleMatchSet');
@@ -86,7 +81,6 @@ function parseQuestions(xml) {
         title, body: bodyP, left, right, correctPairs, id: identifier
       };
     }
-
     // Tipo texto libre (respuesta escrita)
     if (item.getElementsByTagName('textEntryInteraction')[0]) {
       const correct = item.querySelector('correctResponse > value').textContent;
@@ -95,7 +89,6 @@ function parseQuestions(xml) {
         title, body: bodyP, correct, id: identifier
       };
     }
-
     // Tipo ordenar (orderInteraction)
     if (item.getElementsByTagName('orderInteraction')[0]) {
       const choices = Array.from(item.getElementsByTagName('simpleChoice'))
@@ -109,12 +102,9 @@ function parseQuestions(xml) {
         title, body: bodyP, choices, correctOrder, id: identifier
       };
     }
-
     return null;
   }).filter(Boolean);
 }
-
-
 function renderExam(questions) {
   const examDiv = document.getElementById('exam');
   examDiv.innerHTML = '';
@@ -156,7 +146,6 @@ function renderExam(questions) {
     html += `</div>`;
     examDiv.innerHTML += html;
   });
-
   // Drag & drop para ordenar
   questions.forEach(q => {
     if (q.type === 'order') {
@@ -164,7 +153,6 @@ function renderExam(questions) {
     }
   });
 }
-
 // Drag and drop para ordenar lista
 function enableDragDrop(listId) {
   const list = document.getElementById(listId);
@@ -195,7 +183,6 @@ function enableDragDrop(listId) {
     });
   });
 }
-
 // Al hacer submit
 function submitExam() {
   let score = 0, total = questions.length, resHtml = '';
@@ -267,7 +254,6 @@ function submitExam() {
   // Opcional: Desactivar el botón tras envío
   document.querySelector('button').disabled = true;
 }
-
 // Cargar y renderizar XML al cargar la página
 window.addEventListener('DOMContentLoaded', () => {
   fetch(xmlPath)
