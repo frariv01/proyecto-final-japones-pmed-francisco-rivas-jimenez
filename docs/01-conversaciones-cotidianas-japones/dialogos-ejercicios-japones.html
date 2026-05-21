@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Japonés para principiantes</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:40px;
+background:#f4f4f4;
+}
+
+h1,h2{
+color:#333;
+}
+
+table{
+border-collapse:collapse;
+width:85%;
+margin-bottom:20px;
+background:white;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#e8e8e8;
+}
+
+.dialogo{
+background:#ffffff;
+padding:15px;
+margin-bottom:20px;
+border-left:6px solid #888;
+width:85%;
+}
+
+.ejercicio{
+background:white;
+padding:15px;
+border-left:6px solid #0077cc;
+margin-bottom:40px;
+width:85%;
+}
+
+button{
+padding:8px 15px;
+font-size:14px;
+cursor:pointer;
+}
+
+.resultado{
+font-weight:bold;
+margin-top:10px;
+}
+
+</style>
+
+<script>
+
+function comprobar(id, correcta){
+
+let seleccion = document.querySelector('input[name="'+id+'"]:checked');
+
+if(!seleccion){
+alert("Selecciona una opción");
+return;
+}
+
+let resultado = document.getElementById(id+"_resultado");
+
+if(seleccion.value == correcta){
+
+resultado.innerHTML="✅ Correcto";
+resultado.style.color="green";
+
+}else{
+
+resultado.innerHTML="❌ Incorrecto";
+resultado.style.color="red";
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<h1>Japonés para principiantes</h1>
+
+<p>Aprende palabras y frases comunes del japonés utilizadas en diferentes ámbitos de la vida diaria.</p>
+
+<hr>
+
+<h2>1. Saludos</h2>
+
+<table>
+
+<tr>
+<th>Japonés</th>
+<th>Romaji</th>
+<th>Español</th>
+</tr>
+
+<tr>
+<td>こんにちは</td>
+<td>Konnichiwa</td>
+<td>Hola</td>
+</tr>
+
+<tr>
+<td>お元気ですか</td>
+<td>O-genki desu ka</td>
+<td>¿Cómo estás?</td>
+</tr>
+
+<tr>
+<td>ありがとう</td>
+<td>Arigatō</td>
+<td>Gracias</td>
+</tr>
+
+<tr>
+<td>さようなら</td>
+<td>Sayōnara</td>
+<td>Adiós</td>
+</tr>
+
+</table>
+
+<div class="dialogo">
+
+<h3>Diálogo</h3>
+
+<table>
+
+<tr>
+<th>Interlocutor</th>
+<th>Japonés</th>
+<th>Romaji</th>
+</tr>
+
+<tr>
+<td>A</td>
+<td>こんにちは</td>
+<td>Konnichiwa</td>
+</tr>
+
+<tr>
+<td>B</td>
+<td>こんにちは。お元気ですか</td>
+<td>Konnichiwa. O-genki desu ka?</td>
+</tr>
+
+<tr>
+<td>A</td>
+<td>はい、元気です。ありがとう</td>
+<td>Hai, genki desu. Arigatō</td>
+</tr>
+
+<tr>
+<td>B</td>
+<td>さようなら</td>
+<td>Sayōnara</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="ejercicio">
+
+<h3>Ejercicio</h3>
+
+<p>¿Cómo se dice "gracias" en japonés?</p>
+
+<label><input type="radio" name="saludo" value="a"> こんにちは</label><br>
+<label><input type="radio" name="saludo" value="b"> ありがとう</label><br>
+<label><input type="radio" name="saludo" value="c"> さようなら</label><br><br>
+
+<button onclick="comprobar('saludo','b')">Comprobar</button>
+
+<p id="saludo_resultado" class="resultado"></p>
+
+</div>
+
+<hr>
+
+<h2>2. Presentaciones</h2>
+
+<table>
+
+<tr>
+<th>Japonés</th>
+<th>Romaji</th>
+<th>Español</th>
+</tr>
+
+<tr>
+<td>はじめまして</td>
+<td>Hajimemashite</td>
+<td>Mucho gusto</td>
+</tr>
+
+<tr>
+<td>わたしは ___ です</td>
+<td>Watashi wa ___ desu</td>
+<td>Soy ___</td>
+</tr>
+
+<tr>
+<td>よろしくお願いします</td>
+<td>Yoroshiku onegaishimasu</td>
+<td>Encantado</td>
+</tr>
+
+</table>
+
+<div class="dialogo">
+
+<h3>Diálogo</h3>
+
+<table>
+
+<tr>
+<th>Interlocutor</th>
+<th>Japonés</th>
+<th>Romaji</th>
+</tr>
+
+<tr>
+<td>A</td>
+<td>はじめまして</td>
+<td>Hajimemashite</td>
+</tr>
+
+<tr>
+<td>B</td>
+<td>はじめまして</td>
+<td>Hajimemashite</td>
+</tr>
+
+<tr>
+<td>A</td>
+<td>わたしは マリア です</td>
+<td>Watashi wa Maria desu</td>
+</tr>
+
+<tr>
+<td>B</td>
+<td>よろしくお願いします</td>
+<td>Yoroshiku onegaishimasu</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="ejercicio">
+
+<h3>Ejercicio</h3>
+
+<p>¿Qué significa "はじめまして"?</p>
+
+<label><input type="radio" name="presentacion" value="a"> Mucho gusto</label><br>
+<label><input type="radio" name="presentacion" value="b"> Adiós</label><br>
+<label><input type="radio" name="presentacion" value="c"> Gracias</label><br><br>
+
+<button onclick="comprobar('presentacion','a')">Comprobar</button>
+
+<p id="presentacion_resultado" class="resultado"></p>
+
+</div>
+
+<hr>
+
+<h2>3. Restaurante</h2>
+
+<table>
+
+<tr>
+<th>Japonés</th>
+<th>Romaji</th>
+<th>Español</th>
+</tr>
+
+<tr>
+<td>メニュー</td>
+<td>Menyū</td>
+<td>Menú</td>
+</tr>
+
+<tr>
+<td>水</td>
+<td>Mizu</td>
+<td>Agua</td>
+</tr>
+
+<tr>
+<td>おいしい</td>
+<td>Oishii</td>
+<td>Delicioso</td>
+</tr>
+
+</table>
+
+<div class="dialogo">
+
+<h3>Diálogo</h3>
+
+<table>
+
+<tr>
+<th>Interlocutor</th>
+<th>Japonés</th>
+<th>Romaji</th>
+</tr>
+
+<tr>
+<td>Cliente</td>
+<td>すみません</td>
+<td>Sumimasen</td>
+</tr>
+
+<tr>
+<td>Camarero</td>
+<td>はい</td>
+<td>Hai</td>
+</tr>
+
+<tr>
+<td>Cliente</td>
+<td>水をください</td>
+<td>Mizu o kudasai</td>
+</tr>
+
+<tr>
+<td>Camarero</td>
+<td>はい、どうぞ</td>
+<td>Hai, dōzo</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="ejercicio">
+
+<h3>Ejercicio</h3>
+
+<p>¿Qué significa "水 (mizu)"?</p>
+
+<label><input type="radio" name="restaurante" value="a"> Agua</label><br>
+<label><input type="radio" name="restaurante" value="b"> Café</label><br>
+<label><input type="radio" name="restaurante" value="c"> Té</label><br><br>
+
+<button onclick="comprobar('restaurante','a')">Comprobar</button>
+
+<p id="restaurante_resultado" class="resultado"></p>
+
+</div>
+
+<hr>
+
+<h2>4. Compras</h2>
+
+<table>
+
+<tr>
+<th>Japonés</th>
+<th>Romaji</th>
+<th>Español</th>
+</tr>
+
+<tr>
+<td>すみません</td>
+<td>Sumimasen</td>
+<td>Disculpe</td>
+</tr>
+
+<tr>
+<td>これ</td>
+<td>Kore</td>
+<td>Esto</td>
+</tr>
+
+<tr>
+<td>いくらですか</td>
+<td>Ikura desu ka</td>
+<td>¿Cuánto cuesta?</td>
+</tr>
+
+</table>
+
+<div class="dialogo">
+
+<h3>Diálogo</h3>
+
+<table>
+
+<tr>
+<th>Interlocutor</th>
+<th>Japonés</th>
+<th>Romaji</th>
+</tr>
+
+<tr>
+<td>Cliente</td>
+<td>すみません</td>
+<td>Sumimasen</td>
+</tr>
+
+<tr>
+<td>Cliente</td>
+<td>これは いくらですか</td>
+<td>Kore wa ikura desu ka</td>
+</tr>
+
+<tr>
+<td>Dependiente</td>
+<td>500円です</td>
+<td>Go-hyaku en desu</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="ejercicio">
+
+<h3>Ejercicio</h3>
+
+<p>¿Cómo se dice "¿Cuánto cuesta?" en japonés?</p>
+
+<label><input type="radio" name="compras" value="a"> ありがとう</label><br>
+<label><input type="radio" name="compras" value="b"> いくらですか</label><br>
+<label><input type="radio" name="compras" value="c"> おはよう</label><br><br>
+
+<button onclick="comprobar('compras','b')">Comprobar</button>
+
+<p id="compras_resultado" class="resultado"></p>
+
+</div>
+
+<hr>
+
+<h2>5. Transporte</h2>
+
+<table>
+
+<tr>
+<th>Japonés</th>
+<th>Romaji</th>
+<th>Español</th>
+</tr>
+
+<tr>
+<td>駅</td>
+<td>Eki</td>
+<td>Estación</td>
+</tr>
+
+<tr>
+<td>電車</td>
+<td>Densha</td>
+<td>Tren</td>
+</tr>
+
+<tr>
+<td>切符</td>
+<td>Kippu</td>
+<td>Billete</td>
+</tr>
+
+</table>
+
+<div class="dialogo">
+
+<h3>Diálogo</h3>
+
+<table>
+
+<tr>
+<th>Interlocutor</th>
+<th>Japonés</th>
+<th>Romaji</th>
+</tr>
+
+<tr>
+<td>Turista</td>
+<td>すみません、駅はどこですか</td>
+<td>Sumimasen, eki wa doko desu ka?</td>
+</tr>
+
+<tr>
+<td>Persona</td>
+<td>あそこです</td>
+<td>Asoko desu</td>
+</tr>
+
+<tr>
+<td>Turista</td>
+<td>ありがとうございます</td>
+<td>Arigatō gozaimasu</td>
+</tr>
+
+<tr>
+<td>Persona</td>
+<td>どういたしまして</td>
+<td>Dō itashimashite</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="ejercicio">
+
+<h3>Ejercicio</h3>
+
+<p>¿Qué significa "電車 (densha)"?</p>
+
+<label><input type="radio" name="transporte" value="a"> Autobús</label><br>
+<label><input type="radio" name="transporte" value="b"> Tren</label><br>
+<label><input type="radio" name="transporte" value="c"> Taxi</label><br><br>
+
+<button onclick="comprobar('transporte','b')">Comprobar</button>
+
+<p id="transporte_resultado" class="resultado"></p>
+
+</div>
+
+</body>
+</html>
