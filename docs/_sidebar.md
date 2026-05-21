@@ -14,7 +14,7 @@
 
 
 * **5: Examen**
-  * [Examen Interactivo](05-examen-japones/examen-japones-qti.xml)
+  * [Examen Interactivo](05-examen-japones/examen-japones.html)
 
 * **6: Anexos**
 
