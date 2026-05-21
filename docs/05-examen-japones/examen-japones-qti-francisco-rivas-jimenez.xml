@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItems>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+identifier="jp_q1"
+title="Saludo en japonés"
+adaptive="false"
+timeDependent="false">
+
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>B</value>
+    </correctResponse>
+  </responseDeclaration>
+
+  <itemBody>
+    <p>¿Cómo se dice “¿Cómo estás?” en japonés?</p>
+
+    <choiceInteraction responseIdentifier="RESPONSE" maxChoices="1" shuffle="true">
+      <simpleChoice identifier="A">ありがとう</simpleChoice>
+      <simpleChoice identifier="B">お元気ですか</simpleChoice>
+      <simpleChoice identifier="C">さようなら</simpleChoice>
+      <simpleChoice identifier="D">こんにちは</simpleChoice>
+    </choiceInteraction>
+
+  </itemBody>
+
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct.xml"/>
+</assessmentItem>
+
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+identifier="jp_q2"
+title="Completar presentación"
+adaptive="false"
+timeDependent="false">
+
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>CHOICE1</value>
+    </correctResponse>
+  </responseDeclaration>
+
+  <itemBody>
+    <p>Completa la frase:</p>
+
+    <p>
+      <inlineChoiceInteraction responseIdentifier="RESPONSE">
+        <inlineChoice identifier="CHOICE1">はじめ</inlineChoice>
+        <inlineChoice identifier="CHOICE2">ありがとう</inlineChoice>
+        <inlineChoice identifier="CHOICE3">さよう</inlineChoice>
+      </inlineChoiceInteraction>
+      まして。
+    </p>
+
+  </itemBody>
+
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct.xml"/>
+</assessmentItem>
+
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+identifier="jp_q3"
+title="Emparejar vocabulario"
+adaptive="false"
+timeDependent="false">
+
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="directedPair">
+    <correctResponse>
+      <value>CHOICE1 MATCH1</value>
+      <value>CHOICE2 MATCH2</value>
+      <value>CHOICE3 MATCH3</value>
+    </correctResponse>
+  </responseDeclaration>
+
+  <itemBody>
+    <p>Empareja el vocabulario japonés con su significado.</p>
+
+    <matchInteraction responseIdentifier="RESPONSE" shuffle="true" maxAssociations="3">
+
+      <simpleMatchSet>
+        <simpleAssociableChoice identifier="CHOICE1" matchMax="1">こんにちは</simpleAssociableChoice>
+        <simpleAssociableChoice identifier="CHOICE2" matchMax="1">ありがとう</simpleAssociableChoice>
+        <simpleAssociableChoice identifier="CHOICE3" matchMax="1">さようなら</simpleAssociableChoice>
+      </simpleMatchSet>
+
+      <simpleMatchSet>
+        <simpleAssociableChoice identifier="MATCH1" matchMax="1">Hola</simpleAssociableChoice>
+        <simpleAssociableChoice identifier="MATCH2" matchMax="1">Gracias</simpleAssociableChoice>
+        <simpleAssociableChoice identifier="MATCH3" matchMax="1">Adiós</simpleAssociableChoice>
+      </simpleMatchSet>
+
+    </matchInteraction>
+
+  </itemBody>
+
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct.xml"/>
+</assessmentItem>
+
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+identifier="jp_q4"
+title="Pregunta en una tienda"
+adaptive="false"
+timeDependent="false">
+
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>いくらですか</value>
+    </correctResponse>
+  </responseDeclaration>
+
+  <itemBody>
+    <p>Escribe en japonés la expresión que significa “¿Cuánto cuesta?”</p>
+
+    <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="10"/>
+
+  </itemBody>
+
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response.xml"/>
+</assessmentItem>
+
+
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"
+identifier="jp_q5"
+title="Ordenar diálogo"
+adaptive="false"
+timeDependent="false">
+
+  <responseDeclaration identifier="RESPONSE" cardinality="ordered" baseType="identifier">
+    <correctResponse>
+      <value>A</value>
+      <value>B</value>
+      <value>C</value>
+      <value>D</value>
+    </correctResponse>
+  </responseDeclaration>
+
+  <itemBody>
+    <p>Ordena el siguiente diálogo correctamente:</p>
+
+    <orderInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="4">
+
+      <simpleChoice identifier="A">こんにちは</simpleChoice>
+      <simpleChoice identifier="B">お元気ですか</simpleChoice>
+      <simpleChoice identifier="C">はい、元気です</simpleChoice>
+      <simpleChoice identifier="D">さようなら</simpleChoice>
+
+    </orderInteraction>
+
+  </itemBody>
+
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct.xml"/>
+</assessmentItem>
+</assessmentItems>
