@@ -14,7 +14,7 @@
 
 
 * **5: Examen**
-  * [Examen Interactivo](/proyecto-final-japones-pmed-francisco-rivas-jimenez/05-examen-japones/)
+  * [Examen Interactivo](05-examen-japones/)
 
 * **6: Anexos**
 
