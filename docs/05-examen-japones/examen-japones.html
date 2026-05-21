@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen de japonés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --ink:      #0f0e0c;
+  --paper:    #f7f3ec;
+  --paper2:   #efe9df;
+  --red:      #9b2020;
+  --red-lt:   #c0392b;
+  --gold:     #b8892a;
+  --gold-lt:  #d4a843;
+  --correct:  #1a6b3c;
+  --wrong:    #8b1a1a;
+  --gray:     #7a7060;
+  --border:   #d4ccbe;
+
+  --font-jp:   'Noto Serif JP', serif;
+  --font-body: 'Crimson Pro', Georgia, serif;
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 18px;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════
+   GRAIN TEXTURE
+═══════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2.5rem 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: '試験';
+  font-family: var(--font-jp);
+  font-size: 9rem;
+  font-weight: 700;
+  color: rgba(247,243,236,0.04);
+  position: absolute;
+  right: -0.5rem; top: -1rem;
+  line-height: 1;
+  pointer-events: none;
+}
+.header-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold-lt);
+  margin-bottom: 0.4rem;
+}
+header h1 {
+  font-family: var(--font-jp);
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+header h1 span {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: rgba(247,243,236,0.55);
+  margin-top: 0.2rem;
+}
+.header-meta {
+  margin-top: 1.2rem;
+  font-size: 0.8rem;
+  color: rgba(247,243,236,0.4);
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════ */
+.progress-wrap {
+  background: var(--paper2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: sticky; top: 0; z-index: 100;
+}
+.progress-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  white-space: nowrap;
+}
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--red);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+.progress-count {
+  font-size: 0.72rem;
+  color: var(--gray);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════ */
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 5rem;
+}
+
+/* ═══════════════════════════════════════
+   QUESTION CARD
+═══════════════════════════════════════ */
+.question-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15,14,12,0.06), 0 4px 16px rgba(15,14,12,0.04);
+  transition: box-shadow 0.2s;
+}
+.question-card:hover {
+  box-shadow: 0 2px 6px rgba(15,14,12,0.09), 0 8px 24px rgba(15,14,12,0.06);
+}
+
+.q-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.1rem 1.5rem 0.8rem;
+  border-bottom: 1px solid var(--paper2);
+  background: var(--paper);
+}
+.q-num {
+  font-family: var(--font-jp);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.q-title {
+  font-size: 0.72rem;
+  color: var(--gray);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+.q-type-badge {
+  margin-left: auto;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(184,137,42,0.4);
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.q-body {
+  padding: 1.5rem;
+}
+.q-prompt {
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════
+   Q1 – OPCIÓN MÚLTIPLE
+═══════════════════════════════════════ */
+.choices { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 2px;
+  background: white;
+  cursor: pointer;
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  color: var(--ink);
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  position: relative;
+}
+.choice-btn:hover:not(:disabled) {
+  border-color: var(--red-lt);
+  background: #fdf8f5;
+  transform: translateX(3px);
+}
+.choice-btn .choice-letter {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gray);
+  min-width: 1.3em;
+  letter-spacing: 0.1em;
+}
+.choice-btn.selected { border-color: var(--gold); background: #fdf8f0; }
+.choice-btn.correct  { border-color: var(--correct); background: #f0faf4; color: var(--correct); }
+.choice-btn.wrong    { border-color: var(--wrong);   background: #fdf2f2; color: var(--wrong); }
+.choice-btn:disabled { cursor: default; transform: none; }
+
+/* ═══════════════════════════════════════
+   Q2 – INLINE CHOICE (COMPLETAR HUECO)
+═══════════════════════════════════════ */
+.inline-sentence {
+  font-family: var(--font-jp);
+  font-size: 1.4rem;
+  line-height: 2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.inline-select {
+  font-family: var(--font-jp);
+  font-size: 1.1rem;
+  border: none;
+  border-bottom: 2px solid var(--red);
+  background: transparent;
+  color: var(--red);
+  padding: 0.1em 0.5em;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
+  min-width: 4em;
+}
+.inline-select:disabled { color: var(--gray); border-color: var(--gray); }
+.inline-select.correct-sel { color: var(--correct); border-color: var(--correct); }
+.inline-select.wrong-sel   { color: var(--wrong);   border-color: var(--wrong); }
+
+/* ═══════════════════════════════════════
+   Q3 – EMPAREJAR (DRAG & DROP)
+═══════════════════════════════════════ */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.match-col-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 0.5rem;
+}
+.match-items { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.match-source {
+  font-family: var(--font-jp);
+  font-size: 1.1rem;
+  padding: 0.6rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 2px;
+  cursor: grab;
+  background: white;
+  text-align: center;
+  transition: border-color 0.15s, box-shadow 0.15s, opacity 0.15s;
+  user-select: none;
+}
+.match-source:hover { border-color: var(--gold); box-shadow: 0 2px 8px rgba(184,137,42,0.15); }
+.match-source.dragging { opacity: 0.4; cursor: grabbing; }
+.match-source.matched  { opacity: 0.5; cursor: default; border-style: dashed; }
+
+.match-target {
+  font-size: 0.95rem;
+  padding: 0.6rem 1rem;
+  border: 1.5px dashed var(--border);
+  border-radius: 2px;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 2.6rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.match-target.drag-over { border-color: var(--gold); background: #fdf8f0; }
+.match-target .target-label { color: var(--gray); }
+.match-target .paired-chip {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.15em 0.7em;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.match-target .paired-chip:hover { background: var(--red); }
+.match-target.correct-match { border-color: var(--correct); border-style: solid; background: #f0faf4; }
+.match-target.wrong-match   { border-color: var(--wrong);   border-style: solid; background: #fdf2f2; }
+
+/* ═══════════════════════════════════════
+   Q4 – TEXTO LIBRE
+═══════════════════════════════════════ */
+.text-entry-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+.text-hint {
+  font-size: 0.8rem;
+  color: var(--gray);
+  font-style: italic;
+}
+.text-input-jp {
+  font-family: var(--font-jp);
+  font-size: 1.4rem;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  background: transparent;
+  color: var(--ink);
+  padding: 0.3em 0;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.text-input-jp:focus { border-color: var(--red); }
+.text-input-jp:disabled { color: var(--gray); }
+.text-input-jp.correct-txt { border-color: var(--correct); color: var(--correct); }
+.text-input-jp.wrong-txt   { border-color: var(--wrong);   color: var(--wrong); }
+.correct-answer-hint {
+  font-size: 0.82rem;
+  color: var(--correct);
+  font-style: italic;
+  display: none;
+}
+.correct-answer-hint.show { display: block; }
+
+/* ═══════════════════════════════════════
+   Q5 – ORDENAR (DRAG & DROP)
+═══════════════════════════════════════ */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.order-item {
+  font-family: var(--font-jp);
+  font-size: 1.05rem;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 2px;
+  background: white;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.order-item:hover { border-color: var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+.order-item.dragging { opacity: 0.35; cursor: grabbing; }
+.order-item.drag-over-top    { border-top: 2px solid var(--red); }
+.order-item.drag-over-bottom { border-bottom: 2px solid var(--red); }
+.order-item.correct-order { border-color: var(--correct); background: #f0faf4; }
+.order-item.wrong-order   { border-color: var(--wrong);   background: #fdf2f2; }
+.drag-handle {
+  color: var(--border);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+.order-romaji { font-family: var(--font-body); font-size: 0.75rem; color: var(--gray); font-style: italic; }
+
+/* ═══════════════════════════════════════
+   FEEDBACK
+═══════════════════════════════════════ */
+.feedback {
+  margin-top: 1rem;
+  padding: 0.65rem 1rem;
+  border-radius: 2px;
+  font-size: 0.88rem;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  font-style: italic;
+}
+.feedback.show { display: flex; }
+.feedback.ok  { background: #f0faf4; color: var(--correct); border-left: 3px solid var(--correct); }
+.feedback.err { background: #fdf2f2; color: var(--wrong);   border-left: 3px solid var(--wrong); }
+.feedback-icon { font-size: 1rem; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════
+   CHECK BUTTON
+═══════════════════════════════════════ */
+.check-btn {
+  margin-top: 1.2rem;
+  padding: 0.65rem 1.8rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.check-btn:hover:not(:disabled) { background: var(--red); transform: translateY(-1px); }
+.check-btn:disabled { background: var(--border); color: var(--gray); cursor: default; transform: none; }
+
+/* ═══════════════════════════════════════
+   RESULTS PANEL
+═══════════════════════════════════════ */
+#results {
+  display: none;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 2px;
+  padding: 2.5rem;
+  text-align: center;
+  margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+#results::before {
+  content: '合格';
+  font-family: var(--font-jp);
+  font-size: 7rem;
+  color: rgba(247,243,236,0.04);
+  position: absolute;
+  right: -0.3em; bottom: -0.2em;
+  line-height: 1;
+  pointer-events: none;
+}
+#results.show { display: block; }
+.results-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-lt);
+  margin-bottom: 0.5rem;
+}
+.results-score {
+  font-family: var(--font-jp);
+  font-size: 4rem;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.results-score span { font-size: 1.5rem; color: rgba(247,243,236,0.5); }
+.results-msg {
+  font-size: 1rem;
+  color: rgba(247,243,236,0.6);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+.results-jp {
+  font-family: var(--font-jp);
+  font-size: 1.4rem;
+  color: var(--gold-lt);
+  margin-bottom: 0.3rem;
+}
+.results-sub { font-size: 0.8rem; color: rgba(247,243,236,0.35); }
+.retry-btn {
+  margin-top: 1.5rem;
+  padding: 0.65rem 2rem;
+  background: transparent;
+  border: 1px solid rgba(247,243,236,0.25);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.retry-btn:hover { border-color: var(--gold-lt); color: var(--gold-lt); }
+
+/* ═══════════════════════════════════════
+   SUBMIT ALL
+═══════════════════════════════════════ */
+.submit-wrap {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+.submit-btn {
+  padding: 0.9rem 3rem;
+  background: var(--red);
+  color: white;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(155,32,32,0.25);
+}
+.submit-btn:hover { background: #7a1a1a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(155,32,32,0.3); }
+.submit-btn:disabled { background: var(--border); color: var(--gray); cursor: default; transform: none; box-shadow: none; }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.72rem;
+  color: var(--gray);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <p class="header-eyebrow">Evaluación</p>
+  <h1>日本語 試験
+    <span>Examen de japonés</span>
+  </h1>
+  <p class="header-meta">5 preguntas · Tipos: opción múltiple, completar, emparejar, escritura, ordenar</p>
+</header>
+
+<div class="progress-wrap">
+  <span class="progress-label">Progreso</span>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-count" id="progressCount">0 / 5</span>
+</div>
+
+<main>
+
+<!-- ════════════════════════════════════
+     Q1 · OPCIÓN MÚLTIPLE
+════════════════════════════════════ -->
+<div class="question-card" id="card-q1">
+  <div class="q-header">
+    <span class="q-num">Pregunta 01</span>
+    <span class="q-title">Saludo en japonés</span>
+    <span class="q-type-badge">Opción múltiple</span>
+  </div>
+  <div class="q-body">
+    <p class="q-prompt">¿Cómo se dice <em>"¿Cómo estás?"</em> en japonés?</p>
+    <div class="choices" id="choices-q1">
+      <button class="choice-btn" data-value="A" onclick="selectChoice('q1','A')">
+        <span class="choice-letter">A</span>ありがとう
+      </button>
+      <button class="choice-btn" data-value="B" onclick="selectChoice('q1','B')">
+        <span class="choice-letter">B</span>お元気ですか
+      </button>
+      <button class="choice-btn" data-value="C" onclick="selectChoice('q1','C')">
+        <span class="choice-letter">C</span>さようなら
+      </button>
+      <button class="choice-btn" data-value="D" onclick="selectChoice('q1','D')">
+        <span class="choice-letter">D</span>こんにちは
+      </button>
+    </div>
+    <div class="feedback" id="fb-q1">
+      <span class="feedback-icon"></span><span class="feedback-text"></span>
+    </div>
+    <button class="check-btn" id="btn-q1" onclick="checkQ1()" disabled>Comprobar</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     Q2 · INLINE CHOICE (COMPLETAR)
+════════════════════════════════════ -->
+<div class="question-card" id="card-q2">
+  <div class="q-header">
+    <span class="q-num">Pregunta 02</span>
+    <span class="q-title">Completar presentación</span>
+    <span class="q-type-badge">Completar hueco</span>
+  </div>
+  <div class="q-body">
+    <p class="q-prompt">Selecciona la palabra correcta para completar la frase de presentación:</p>
+    <div class="inline-sentence">
+      <select class="inline-select" id="select-q2" onchange="onInlineChange()">
+        <option value="">— elige —</option>
+        <option value="CHOICE1">はじめ</option>
+        <option value="CHOICE2">ありがとう</option>
+        <option value="CHOICE3">さよう</option>
+      </select>
+      <span style="font-family:var(--font-jp); font-size:1.3rem;">まして。</span>
+    </div>
+    <div class="feedback" id="fb-q2">
+      <span class="feedback-icon"></span><span class="feedback-text"></span>
+    </div>
+    <button class="check-btn" id="btn-q2" onclick="checkQ2()" disabled>Comprobar</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     Q3 · EMPAREJAR (DRAG & DROP)
+════════════════════════════════════ -->
+<div class="question-card" id="card-q3">
+  <div class="q-header">
+    <span class="q-num">Pregunta 03</span>
+    <span class="q-title">Emparejar vocabulario</span>
+    <span class="q-type-badge">Arrastrar y soltar</span>
+  </div>
+  <div class="q-body">
+    <p class="q-prompt">Arrastra cada palabra japonesa hasta su significado en español:</p>
+    <div class="match-grid">
+      <div>
+        <div class="match-col-label">Japonés</div>
+        <div class="match-items" id="match-sources">
+          <div class="match-source" id="src-CHOICE1" draggable="true"
+               ondragstart="dragStart(event,'CHOICE1')" ondragend="dragEnd(event)">こんにちは</div>
+          <div class="match-source" id="src-CHOICE2" draggable="true"
+               ondragstart="dragStart(event,'CHOICE2')" ondragend="dragEnd(event)">ありがとう</div>
+          <div class="match-source" id="src-CHOICE3" draggable="true"
+               ondragstart="dragStart(event,'CHOICE3')" ondragend="dragEnd(event)">さようなら</div>
+        </div>
+      </div>
+      <div>
+        <div class="match-col-label">Español</div>
+        <div class="match-items">
+          <div class="match-target" id="tgt-MATCH1"
+               ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event,'MATCH1')">
+            <span class="target-label">Hola</span>
+          </div>
+          <div class="match-target" id="tgt-MATCH2"
+               ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event,'MATCH2')">
+            <span class="target-label">Gracias</span>
+          </div>
+          <div class="match-target" id="tgt-MATCH3"
+               ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event,'MATCH3')">
+            <span class="target-label">Adiós</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="feedback" id="fb-q3">
+      <span class="feedback-icon"></span><span class="feedback-text"></span>
+    </div>
+    <button class="check-btn" id="btn-q3" onclick="checkQ3()" disabled>Comprobar</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     Q4 · TEXTO LIBRE
+════════════════════════════════════ -->
+<div class="question-card" id="card-q4">
+  <div class="q-header">
+    <span class="q-num">Pregunta 04</span>
+    <span class="q-title">Pregunta en una tienda</span>
+    <span class="q-type-badge">Respuesta escrita</span>
+  </div>
+  <div class="q-body">
+    <p class="q-prompt">Escribe en japonés (hiragana) la expresión que significa <em>"¿Cuánto cuesta?"</em></p>
+    <div class="text-entry-wrap">
+      <p class="text-hint">Escribe en hiragana. Pista: empieza por い…</p>
+      <input type="text" class="text-input-jp" id="input-q4"
+             placeholder="いくら…" maxlength="15"
+             oninput="onTextInput()"
+             onkeydown="if(event.key==='Enter') checkQ4()">
+      <p class="correct-answer-hint" id="hint-q4">Respuesta correcta: いくらですか</p>
+    </div>
+    <div class="feedback" id="fb-q4">
+      <span class="feedback-icon"></span><span class="feedback-text"></span>
+    </div>
+    <button class="check-btn" id="btn-q4" onclick="checkQ4()" disabled>Comprobar</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     Q5 · ORDENAR DIÁLOGO
+════════════════════════════════════ -->
+<div class="question-card" id="card-q5">
+  <div class="q-header">
+    <span class="q-num">Pregunta 05</span>
+    <span class="q-title">Ordenar diálogo</span>
+    <span class="q-type-badge">Ordenar arrastrando</span>
+  </div>
+  <div class="q-body">
+    <p class="q-prompt">Arrastra las frases para reconstruir el diálogo en el orden correcto:</p>
+    <div class="order-list" id="order-list">
+      <!-- items inserted by JS in random order -->
+    </div>
+    <div class="feedback" id="fb-q5">
+      <span class="feedback-icon"></span><span class="feedback-text"></span>
+    </div>
+    <button class="check-btn" id="btn-q5" onclick="checkQ5()">Comprobar</button>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div class="submit-wrap">
+  <button class="submit-btn" id="submitBtn" onclick="submitAll()">Ver resultado final</button>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <p class="results-label">Resultado del examen</p>
+  <div class="results-score" id="resultsScore">0 <span>/ 5</span></div>
+  <p class="results-msg" id="resultsMsg"></p>
+  <p class="results-jp" id="resultsJp"></p>
+  <p class="results-sub" id="resultsSub"></p>
+  <button class="retry-btn" onclick="retryExam()">Reintentar examen</button>
+</div>
+
+</main>
+
+<footer>日本語 Nihongo Paso a Paso · Francisco Rivas Jiménez · Examen generado desde IMS QTI 2.2</footer>
+
+<script>
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+const state = {
+  q1: { selected: null, done: false },
+  q2: { selected: null, done: false },
+  q3: { pairs: {}, done: false },   // { MATCH1: 'CHOICE1', ... }
+  q4: { done: false },
+  q5: { done: false },
+  scores: {}
+};
+
+// Correct answers from QTI
+const CORRECT = {
+  q1: 'B',
+  q2: 'CHOICE1',
+  q3: { MATCH1: 'CHOICE1', MATCH2: 'CHOICE2', MATCH3: 'CHOICE3' },
+  q4: 'いくらですか',
+  q5: ['A','B','C','D']
+};
+
+const LABELS = {
+  CHOICE1: 'こんにちは', CHOICE2: 'ありがとう', CHOICE3: 'さようなら',
+  MATCH1: 'Hola',        MATCH2: 'Gracias',     MATCH3: 'Adiós',
+  A: 'こんにちは', B: 'お元気ですか', C: 'はい、元気です', D: 'さようなら'
+};
+
+const ROMAJI = {
+  A: 'Konnichiwa', B: 'O-genki desu ka?', C: 'Hai, genki desu.', D: 'Sayōnara'
+};
+
+/* ═══════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════ */
+function updateProgress() {
+  const done = ['q1','q2','q3','q4','q5'].filter(q => state[q].done).length;
+  document.getElementById('progressFill').style.width = (done/5*100)+'%';
+  document.getElementById('progressCount').textContent = done + ' / 5';
+}
+
+/* ═══════════════════════════════════════
+   Q1 – MÚLTIPLE CHOICE
+═══════════════════════════════════════ */
+function selectChoice(qid, val) {
+  if (state[qid].done) return;
+  state[qid].selected = val;
+  document.querySelectorAll(`#choices-${qid} .choice-btn`).forEach(b => {
+    b.classList.toggle('selected', b.dataset.value === val);
+  });
+  document.getElementById(`btn-${qid}`).disabled = false;
+}
+
+function checkQ1() {
+  if (state.q1.done) return;
+  state.q1.done = true;
+  const sel = state.q1.selected;
+  const correct = sel === CORRECT.q1;
+  state.scores.q1 = correct ? 1 : 0;
+  document.querySelectorAll('#choices-q1 .choice-btn').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.value === CORRECT.q1) b.classList.add('correct');
+    else if (b.dataset.value === sel)   b.classList.add('wrong');
+  });
+  showFeedback('q1', correct,
+    correct ? '¡Correcto! お元気ですか significa "¿Cómo estás?"'
+            : `Incorrecto. La respuesta correcta es お元気ですか (o-genki desu ka).`);
+  document.getElementById('btn-q1').disabled = true;
+  updateProgress();
+}
+
+/* ═══════════════════════════════════════
+   Q2 – INLINE CHOICE
+═══════════════════════════════════════ */
+function onInlineChange() {
+  state.q2.selected = document.getElementById('select-q2').value;
+  document.getElementById('btn-q2').disabled = !state.q2.selected;
+}
+
+function checkQ2() {
+  if (state.q2.done) return;
+  state.q2.done = true;
+  const sel = state.q2.selected;
+  const correct = sel === CORRECT.q2;
+  state.scores.q2 = correct ? 1 : 0;
+  const s = document.getElementById('select-q2');
+  s.disabled = true;
+  s.classList.add(correct ? 'correct-sel' : 'wrong-sel');
+  showFeedback('q2', correct,
+    correct ? '¡Correcto! La frase completa es はじめまして (Hajimemashite) — "Mucho gusto".'
+            : 'Incorrecto. La respuesta es はじめ → はじめまして (Hajimemashite).');
+  document.getElementById('btn-q2').disabled = true;
+  updateProgress();
+}
+
+/* ═══════════════════════════════════════
+   Q3 – DRAG & DROP MATCH
+═══════════════════════════════════════ */
+let draggedId = null;
+
+function dragStart(e, id) {
+  draggedId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => document.getElementById('src-'+id).classList.add('dragging'), 0);
+}
+function dragEnd(e) {
+  if (draggedId) document.getElementById('src-'+draggedId)?.classList.remove('dragging');
+}
+function dragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function dragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function drop(e, matchId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!draggedId || state.q3.done) return;
+
+  // Remove this source from any existing target
+  Object.keys(state.q3.pairs).forEach(tid => {
+    if (state.q3.pairs[tid] === draggedId) {
+      delete state.q3.pairs[tid];
+      const tgt = document.getElementById('tgt-'+tid);
+      const chip = tgt.querySelector('.paired-chip');
+      if (chip) chip.remove();
+      // restore source
+      const src = document.getElementById('src-'+draggedId);
+      if (src) { src.classList.remove('matched'); src.draggable = true; }
+    }
+  });
+
+  // Remove whatever was already in this target
+  const existing = state.q3.pairs[matchId];
+  if (existing) {
+    const tgt = document.getElementById('tgt-'+matchId);
+    const chip = tgt.querySelector('.paired-chip');
+    if (chip) chip.remove();
+    const src = document.getElementById('src-'+existing);
+    if (src) { src.classList.remove('matched'); src.draggable = true; }
+  }
+
+  // Place
+  state.q3.pairs[matchId] = draggedId;
+  const tgt = document.getElementById('tgt-'+matchId);
+  const chip = document.createElement('span');
+  chip.className = 'paired-chip';
+  chip.textContent = LABELS[draggedId];
+  chip.title = 'Haz clic para quitar';
+  chip.onclick = () => removeMatch(matchId, draggedId);
+  tgt.appendChild(chip);
+
+  const src = document.getElementById('src-'+draggedId);
+  src.classList.add('matched');
+  src.draggable = false;
+
+  draggedId = null;
+
+  // Enable check when all 3 matched
+  document.getElementById('btn-q3').disabled = Object.keys(state.q3.pairs).length < 3;
+}
+
+function removeMatch(matchId, choiceId) {
+  if (state.q3.done) return;
+  delete state.q3.pairs[matchId];
+  const tgt = document.getElementById('tgt-'+matchId);
+  const chip = tgt.querySelector('.paired-chip');
+  if (chip) chip.remove();
+  const src = document.getElementById('src-'+choiceId);
+  if (src) { src.classList.remove('matched'); src.draggable = true; }
+  document.getElementById('btn-q3').disabled = Object.keys(state.q3.pairs).length < 3;
+}
+
+function checkQ3() {
+  if (state.q3.done) return;
+  state.q3.done = true;
+  let correct = 0;
+  Object.keys(CORRECT.q3).forEach(matchId => {
+    const tgt = document.getElementById('tgt-'+matchId);
+    const isCorrect = state.q3.pairs[matchId] === CORRECT.q3[matchId];
+    if (isCorrect) correct++;
+    tgt.classList.add(isCorrect ? 'correct-match' : 'wrong-match');
+    const chip = tgt.querySelector('.paired-chip');
+    if (chip) chip.onclick = null;
+  });
+  state.scores.q3 = correct === 3 ? 1 : 0;
+  // Disable all sources
+  document.querySelectorAll('.match-source').forEach(s => { s.draggable = false; });
+  showFeedback('q3', correct===3,
+    correct===3 ? '¡Perfecto! こんにちは=Hola · ありがとう=Gracias · さようなら=Adiós'
+                : `${correct}/3 correctas. こんにちは=Hola · ありがとう=Gracias · さようなら=Adiós`);
+  document.getElementById('btn-q3').disabled = true;
+  updateProgress();
+}
+
+/* ═══════════════════════════════════════
+   Q4 – TEXT ENTRY
+═══════════════════════════════════════ */
+function onTextInput() {
+  const val = document.getElementById('input-q4').value.trim();
+  document.getElementById('btn-q4').disabled = val.length < 2;
+}
+
+function checkQ4() {
+  if (state.q4.done) return;
+  const val = document.getElementById('input-q4').value.trim();
+  if (!val) return;
+  state.q4.done = true;
+  const correct = val === CORRECT.q4;
+  state.scores.q4 = correct ? 1 : 0;
+  const inp = document.getElementById('input-q4');
+  inp.disabled = true;
+  inp.classList.add(correct ? 'correct-txt' : 'wrong-txt');
+  if (!correct) document.getElementById('hint-q4').classList.add('show');
+  showFeedback('q4', correct,
+    correct ? '¡Correcto! いくらですか (ikura desu ka) = "¿Cuánto cuesta?"'
+            : 'Incorrecto. La expresión es いくらですか (ikura desu ka).');
+  document.getElementById('btn-q4').disabled = true;
+  updateProgress();
+}
+
+/* ═══════════════════════════════════════
+   Q5 – ORDER (DRAG & DROP)
+═══════════════════════════════════════ */
+const ORDER_DATA = [
+  { id:'A', jp:'こんにちは',    rom:'Konnichiwa' },
+  { id:'B', jp:'お元気ですか',  rom:'O-genki desu ka?' },
+  { id:'C', jp:'はい、元気です',rom:'Hai, genki desu.' },
+  { id:'D', jp:'さようなら',    rom:'Sayōnara' }
+];
+
+function shuffle(arr) {
+  for (let i=arr.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function buildOrderList() {
+  const list = document.getElementById('order-list');
+  list.innerHTML = '';
+  const shuffled = shuffle([...ORDER_DATA]);
+  shuffled.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'order-item';
+    el.id = 'ord-'+item.id;
+    el.draggable = true;
+    el.dataset.id = item.id;
+    el.innerHTML = `<span class="drag-handle">⠿</span>
+      <span style="font-family:var(--font-jp);font-size:1.05rem;">${item.jp}</span>
+      <span class="order-romaji">${item.rom}</span>`;
+    el.addEventListener('dragstart', ordDragStart);
+    el.addEventListener('dragend',   ordDragEnd);
+    el.addEventListener('dragover',  ordDragOver);
+    el.addEventListener('dragleave', ordDragLeave);
+    el.addEventListener('drop',      ordDrop);
+    list.appendChild(el);
+  });
+}
+
+let ordDragged = null;
+function ordDragStart(e) {
+  ordDragged = this;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(()=>this.classList.add('dragging'),0);
+}
+function ordDragEnd() { this.classList.remove('dragging'); }
+function ordDragOver(e) {
+  e.preventDefault();
+  if (this === ordDragged) return;
+  const box = this.getBoundingClientRect();
+  const mid = box.top + box.height/2;
+  this.classList.remove('drag-over-top','drag-over-bottom');
+  this.classList.add(e.clientY < mid ? 'drag-over-top' : 'drag-over-bottom');
+}
+function ordDragLeave() { this.classList.remove('drag-over-top','drag-over-bottom'); }
+function ordDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over-top','drag-over-bottom');
+  if (this === ordDragged) return;
+  const list = document.getElementById('order-list');
+  const box = this.getBoundingClientRect();
+  const before = e.clientY < box.top + box.height/2;
+  list.insertBefore(ordDragged, before ? this : this.nextSibling);
+}
+
+function checkQ5() {
+  if (state.q5.done) return;
+  state.q5.done = true;
+  const items = [...document.querySelectorAll('#order-list .order-item')];
+  const order = items.map(el => el.dataset.id);
+  const correct = JSON.stringify(order) === JSON.stringify(CORRECT.q5);
+  state.scores.q5 = correct ? 1 : 0;
+  items.forEach((el, i) => {
+    el.draggable = false;
+    el.classList.add(el.dataset.id === CORRECT.q5[i] ? 'correct-order' : 'wrong-order');
+  });
+  showFeedback('q5', correct,
+    correct ? '¡Perfecto! El orden del diálogo es correcto.'
+            : 'El orden correcto es: こんにちは → お元気ですか → はい、元気です → さようなら');
+  document.getElementById('btn-q5').disabled = true;
+  updateProgress();
+}
+
+/* ═══════════════════════════════════════
+   FEEDBACK HELPER
+═══════════════════════════════════════ */
+function showFeedback(qid, correct, msg) {
+  const fb = document.getElementById('fb-'+qid);
+  fb.className = 'feedback show ' + (correct ? 'ok' : 'err');
+  fb.querySelector('.feedback-icon').textContent = correct ? '✓' : '✗';
+  fb.querySelector('.feedback-text').textContent = msg;
+}
+
+/* ═══════════════════════════════════════
+   SUBMIT ALL
+═══════════════════════════════════════ */
+function submitAll() {
+  // Auto-check any unanswered
+  if (!state.q1.done && state.q1.selected) checkQ1();
+  if (!state.q2.done && state.q2.selected) checkQ2();
+  if (!state.q3.done) checkQ3();
+  if (!state.q4.done) checkQ4();
+  if (!state.q5.done) checkQ5();
+
+  const total = Object.values(state.scores).reduce((a,b)=>a+b,0);
+
+  const msgs = [
+    { min:5, jp:'素晴らしい！', es:'¡Sobresaliente! Dominas el nivel A1.',    sub:'Excelente trabajo. Puedes avanzar al siguiente nivel.' },
+    { min:4, jp:'よくできました！', es:'¡Notable! Muy buen trabajo.',             sub:'Repasa los puntos fallados y estarás listo.' },
+    { min:3, jp:'まあまあです。', es:'Aprobado. Sigue practicando.',             sub:'Revisa las unidades de vocabulario y gramática.' },
+    { min:0, jp:'もっと練習が必要です。', es:'Necesitas más práctica.',            sub:'Repasa todo el material antes de volver a intentarlo.' }
+  ];
+
+  const m = msgs.find(x => total >= x.min);
+  document.getElementById('resultsScore').innerHTML = `${total} <span>/ 5</span>`;
+  document.getElementById('resultsMsg').textContent = m.es;
+  document.getElementById('resultsJp').textContent  = m.jp;
+  document.getElementById('resultsSub').textContent = m.sub;
+
+  const results = document.getElementById('results');
+  results.classList.add('show');
+  results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('submitBtn').disabled = true;
+}
+
+/* ═══════════════════════════════════════
+   RETRY
+═══════════════════════════════════════ */
+function retryExam() {
+  // Reset state
+  ['q1','q2','q3','q4','q5'].forEach(q => {
+    state[q] = q==='q3' ? {pairs:{},done:false} : {selected:null,done:false};
+  });
+  state.scores = {};
+
+  // Q1
+  document.querySelectorAll('#choices-q1 .choice-btn').forEach(b => {
+    b.disabled=false; b.className='choice-btn';
+  });
+  document.getElementById('btn-q1').disabled=true;
+
+  // Q2
+  const s=document.getElementById('select-q2');
+  s.value=''; s.disabled=false; s.className='inline-select';
+  document.getElementById('btn-q2').disabled=true;
+
+  // Q3
+  document.querySelectorAll('.match-target').forEach(t => {
+    t.className='match-target';
+    const chip=t.querySelector('.paired-chip');
+    if(chip) chip.remove();
+  });
+  document.querySelectorAll('.match-source').forEach(s => {
+    s.classList.remove('matched'); s.draggable=true;
+  });
+  document.getElementById('btn-q3').disabled=true;
+
+  // Q4
+  const inp=document.getElementById('input-q4');
+  inp.value=''; inp.disabled=false; inp.className='text-input-jp';
+  document.getElementById('hint-q4').classList.remove('show');
+  document.getElementById('btn-q4').disabled=true;
+
+  // Q5
+  buildOrderList();
+  document.getElementById('btn-q5').disabled=false;
+
+  // Clear feedbacks
+  ['q1','q2','q3','q4','q5'].forEach(q => {
+    const fb=document.getElementById('fb-'+q);
+    fb.className='feedback';
+  });
+
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('submitBtn').disabled=false;
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+buildOrderList();
+updateProgress();
+</script>
+</body>
+</html>
