@@ -17,5 +17,5 @@
   * [Examen Interactivo](05-examen-japones/examen-japones.html)
 
 * **6: Anexos**
-
+  * [Libro](06-anexos-japones/sobrevivir-en-tokio.epub)
 
