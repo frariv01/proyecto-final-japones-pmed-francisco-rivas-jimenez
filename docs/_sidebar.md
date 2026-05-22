@@ -11,7 +11,7 @@
   * [Un viaje a Japón - Historia interactiva](03-narrativa-japones/un-viaje-a-japon-historia-interactiva.html)
 
 * **4: Novela visual**
-
+  * [Misterio en Kioto - Novela visual](04-novela-visual-japones/MisterioEnKioto-1.0-web/index.html)
 
 * **5: Examen**
   * [Examen Interactivo](05-examen-japones/examen-japones.html)
