@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japonés Básico — Presentación del Curso · PMED</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;500&display=swap');
+
+/* ── TOKENS ── */
+:root {
+  --red:    #C0392B;
+  --red-lt: #E74C3C;
+  --paper:  #F5F0E8;
+  --ink:    #141420;
+  --gold:   #D4A843;
+  --gold-d: #B8892A;
+  --gray:   #8a8a9a;
+  --dim:    rgba(245,240,232,0.45);
+}
+
+/* ── BASE ── */
+.reveal {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--ink);
+}
+.reveal .slides section {
+  text-align: left;
+  height: 100%;
+}
+
+/* ── MODIFICACIÓN: BARRA DE SCROLL VERTICAL ── */
+.reveal .slides section.scrollable {
+  overflow-y: auto !important;
+  max-height: 100%;
+  padding-right: 15px;
+  box-sizing: border-box;
+}
+
+/* Estilo personalizado de la barra de scroll (Motores Webkit: Chrome, Safari, Edge) */
+.reveal .slides section.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+.reveal .slides section.scrollable::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+.reveal .slides section.scrollable::-webkit-scrollbar-thumb {
+  background: var(--gold-d);
+  border-radius: 4px;
+}
+.reveal .slides section.scrollable::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* ── HEADINGS ── */
+.reveal h1, .reveal h2, .reveal h3 {
+  text-transform: none;
+  font-family: 'Noto Serif JP', serif;
+  margin: 0;
+}
+.reveal h2 {
+  font-size: 1.05em;
+  color: var(--red-lt);
+  border-bottom: 1px solid rgba(231,76,60,0.3);
+  padding-bottom: 0.25em;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.03em;
+}
+.reveal h3 {
+  font-size: 0.62em;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin-bottom: 0.35em;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.reveal p, .reveal li {
+  font-size: 0.58em;
+  color: var(--paper);
+  line-height: 1.75;
+  font-weight: 300;
+}
+.reveal ul { list-style: none; padding: 0; }
+.reveal ul li::before {
+  content: '—';
+  color: var(--red-lt);
+  margin-right: 0.5em;
+}
+.reveal a { color: var(--gold); text-decoration: none; }
+
+/* ══════════════════════════════════
+   SLIDE 1 — PORTADA
+══════════════════════════════════ */
+.cover-wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.cover-bg-kanji {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 700;
+  font-size: 13em;
+  color: rgba(192,57,43,0.08);
+  position: absolute;
+  right: -0.12em;
+  top: -0.1em;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.cover-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(192,57,43,0.15);
+  pointer-events: none;
+}
+.cover-eyebrow {
+  font-size: 0.5em;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red-lt);
+  margin-bottom: 0.5em;
+  font-weight: 400;
+}
+.cover-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 2.6em;
+  font-weight: 700;
+  color: var(--paper);
+  line-height: 1.15;
+  margin: 0 0 0.2em;
+}
+.cover-subtitle {
+  font-size: 0.62em;
+  color: var(--dim);
+  font-weight: 300;
+  margin-bottom: 1.3em;
+}
+.cover-author {
+  font-size: 0.46em;
+  color: var(--gold);
+  border-top: 1px solid rgba(212,168,67,0.3);
+  padding-top: 0.7em;
+  display: inline-block;
+  letter-spacing: 0.06em;
+}
+.cover-url {
+  font-size: 0.38em;
+  color: var(--dim);
+  margin-top: 0.4em;
+  font-family: monospace;
+  letter-spacing: 0.03em;
+}
+
+/* ══════════════════════════════════
+   ÍNDICE
+══════════════════════════════════ */
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45em;
+  margin-top: 0.5em;
+}
+.toc-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 4px;
+  padding: 0.55em 0.65em;
+}
+.toc-num {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.3em;
+  color: var(--red-lt);
+  display: block;
+  line-height: 1;
+}
+.toc-jp {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1em;
+  color: var(--gold);
+  display: block;
+  margin: 0.15em 0 0.1em;
+}
+.toc-es {
+  font-size: 0.42em;
+  color: var(--gray);
+  display: block;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+/* ══════════════════════════════════
+   OBJETIVO / INTRO SLIDES
+══════════════════════════════════ */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-top: 0.6em;
+}
+.pill {
+  font-size: 0.5em;
+  background: rgba(192,57,43,0.18);
+  border: 1px solid rgba(192,57,43,0.35);
+  color: var(--paper);
+  border-radius: 20px;
+  padding: 0.3em 0.85em;
+  font-weight: 300;
+}
+.pill.gold {
+  background: rgba(212,168,67,0.15);
+  border-color: rgba(212,168,67,0.35);
+  color: var(--gold);
+}
+
+/* ══════════════════════════════════
+   MATERIAL CARDS (herramientas)
+══════════════════════════════════ */
+.tool-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38em;
+  margin-top: 0.4em;
+}
+.tool-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75em;
+  padding: 0.4em 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.tool-badge {
+  font-size: 0.38em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 0.3em 0.65em;
+  white-space: nowrap;
+  min-width: 5.5em;
+  text-align: center;
+  margin-top: 0.2em;
+  flex-shrink: 0;
+}
+.badge-red  { background: rgba(192,57,43,0.25); border: 1px solid rgba(192,57,43,0.5); color: #e87; }
+.badge-gold { background: rgba(212,168,67,0.18); border: 1px solid rgba(212,168,67,0.45); color: var(--gold); }
+.badge-blue { background: rgba(52,152,219,0.18); border: 1px solid rgba(52,152,219,0.4); color: #7bc; }
+.badge-green{ background: rgba(39,174,96,0.18);  border: 1px solid rgba(39,174,96,0.4);  color: #8d8; }
+.tool-text  { font-size: 0.52em; color: var(--paper); line-height: 1.55; font-weight: 300; }
+.tool-text strong { color: var(--gold); font-weight: 500; }
+.tool-text em      { color: var(--gray); font-style: italic; }
+
+/* ══════════════════════════════════
+   VOCAB TABLE
+══════════════════════════════════ */
+.vocab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.54em;
+  margin-top: 0.5em;
+}
+.vocab-table th {
+  background: rgba(192,57,43,0.28);
+  color: var(--paper);
+  padding: 0.45em 0.75em;
+  text-align: left;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  font-size: 0.85em;
+  text-transform: uppercase;
+}
+.vocab-table td {
+  padding: 0.4em 0.75em;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: var(--paper);
+  font-weight: 300;
+}
+.vocab-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+.jp  { font-family: 'Noto Serif JP', serif; color: var(--gold); font-size: 1.15em; }
+.rom { color: var(--gray); font-style: italic; }
+
+/* ══════════════════════════════════
+   PARTÍCULAS GRID
+══════════════════════════════════ */
+.particle-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4em;
+  margin-top: 0.5em;
+}
+.p-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 0.5em 0.3em;
+  text-align: center;
+}
+.p-char {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.8em;
+  color: var(--red-lt);
+  display: block;
+  line-height: 1.1;
+}
+.p-rom  { font-size: 0.4em; color: var(--gold); display: block; margin: 0.15em 0 0.05em; letter-spacing: 0.08em; }
+.p-desc { font-size: 0.37em; color: var(--gray); display: block; line-height: 1.3; }
+
+/* ══════════════════════════════════
+   NARRATIVA CARDS
+══════════════════════════════════ */
+.narr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin-top: 0.5em;
+}
+.narr-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 4px;
+  padding: 0.7em 0.85em;
+}
+.narr-label {
+  font-size: 0.38em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--red-lt);
+  display: block;
+  margin-bottom: 0.3em;
+}
+.narr-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 0.66em;
+  color: var(--paper);
+  display: block;
+  margin-bottom: 0.35em;
+  font-weight: 400;
+}
+.narr-desc { font-size: 0.46em; color: var(--gray); line-height: 1.55; font-weight: 300; }
+
+/* ══════════════════════════════════
+   OBJETIVOS
+══════════════════════════════════ */
+.obj-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4em;
+  margin-top: 0.5em;
+}
+.obj-item {
+  display: flex;
+  gap: 0.5em;
+  align-items: flex-start;
+  padding: 0.4em 0.5em;
+  background: rgba(255,255,255,0.03);
+  border-left: 2px solid var(--red);
+  border-radius: 0 3px 3px 0;
+}
+.obj-icon { font-size: 0.65em; margin-top: 0.05em; flex-shrink: 0; }
+.obj-text { font-size: 0.5em; color: var(--paper); line-height: 1.5; font-weight: 300; }
+
+/* ══════════════════════════════════
+   UNE 71362
+══════════════════════════════════ */
+.une-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45em;
+  margin-top: 0.5em;
+}
+.une-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 0.55em 0.7em;
+}
+.une-cat {
+  font-size: 0.43em;
+  color: var(--gold);
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.2em;
+}
+.une-text { font-size: 0.46em; color: var(--dim); line-height: 1.5; font-weight: 300; }
+
+/* ══════════════════════════════════
+   CIERRE
+══════════════════════════════════ */
+.close-kanji {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 10em;
+  color: rgba(192,57,43,0.07);
+  position: absolute;
+  right: -0.15em;
+  bottom: -0.1em;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.qr-block {
+  margin-top: 1em;
+  padding: 0.6em 0.9em;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  display: inline-block;
+}
+.qr-label { font-size: 0.4em; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.25em; }
+.qr-url   { font-size: 0.42em; color: var(--gold); font-family: monospace; }
+
+/* ── Slide number ── */
+.reveal .slide-number { color: var(--gray); font-size: 0.65em; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section data-background-color="#141420">
+  <div class="cover-wrap">
+    <div class="cover-bg-kanji">日</div>
+    <div class="cover-ring" style="width:600px;height:600px;top:-200px;left:-200px;"></div>
+    <div class="cover-ring" style="width:380px;height:380px;top:-100px;left:-100px;"></div>
+
+    <div style="position:relative;z-index:2;">
+      <p class="cover-eyebrow">Producción de Materiales Educativos Digitales</p>
+      <h1 class="cover-title">日本語<br>Japonés Básico</h1>
+      <p class="cover-subtitle">Curso de japonés para principiantes<br>
+        Trabajo Final de Asignatura · GitHub Pages</p>
+      <span class="cover-author">Francisco Rivas Jiménez</span>
+      <p class="cover-url">frariv01.github.io/proyecto-final-japones-pmed-francisco-rivas-jimenez</p>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420">
+  <h3>Estructura</h3>
+  <h2>6 bloques de contenido</h2>
+  <div class="toc-grid">
+    <div class="toc-card">
+      <span class="toc-num">01</span>
+      <span class="toc-jp">会話</span>
+      <span class="toc-es">Conversaciones cotidianas</span>
+    </div>
+    <div class="toc-card">
+      <span class="toc-num">02</span>
+      <span class="toc-jp">助詞</span>
+      <span class="toc-es">Partículas gramaticales</span>
+    </div>
+    <div class="toc-card">
+      <span class="toc-num">03</span>
+      <span class="toc-jp">旅</span>
+      <span class="toc-es">Un viaje a Japón (Twine)</span>
+    </div>
+    <div class="toc-card">
+      <span class="toc-num">04</span>
+      <span class="toc-jp">謎</span>
+      <span class="toc-es">Misterio en Kioto (RenPy)</span>
+    </div>
+    <div class="toc-card">
+      <span class="toc-num">05</span>
+      <span class="toc-jp">試験</span>
+      <span class="toc-es">Examen interactivo</span>
+    </div>
+    <div class="toc-card">
+      <span class="toc-num">06</span>
+      <span class="toc-jp">付録</span>
+      <span class="toc-es">Anexos EPUB</span>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420">
+  <h3>Finalidad</h3>
+  <h2>Objetivos del curso</h2>
+  <div class="obj-grid">
+    <div class="obj-item">
+      <span class="obj-icon">🗣️</span>
+      <span class="obj-text">Saludar y presentarse en japonés con fluidez básica</span>
+    </div>
+    <div class="obj-item">
+      <span class="obj-icon">👂</span>
+      <span class="obj-text">Entender conversaciones cotidianas básicas</span>
+    </div>
+    <div class="obj-item">
+      <span class="obj-icon">⛩️</span>
+      <span class="obj-text">Utilizar las partículas gramaticales esenciales</span>
+    </div>
+    <div class="obj-item">
+      <span class="obj-icon">📖</span>
+      <span class="obj-text">Leer frases simples en hiragana y romaji</span>
+    </div>
+    <div class="obj-item">
+      <span class="obj-icon">💬</span>
+      <span class="obj-text">Participar en diálogos cotidianos situacionales</span>
+    </div>
+    <div class="obj-item">
+      <span class="obj-icon">🗂️</span>
+      <span class="obj-text">Comprender vocabulario frecuente de viaje</span>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420">
+  <h3>Unidad 01 · 会話</h3>
+  <h2>Conversaciones cotidianas</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8em;margin-top:0.4em;">
+    <div>
+      <p style="font-size:0.5em;color:var(--gold);margin-bottom:0.3em;letter-spacing:0.06em;">TEMAS</p>
+      <ul>
+        <li>Saludos y despedidas</li>
+        <li>Presentaciones personales</li>
+        <li>Compras y tiendas</li>
+        <li>Actividades prácticas</li>
+        <li>Role-play y creación de diálogos</li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-size:0.5em;color:var(--gold);margin-bottom:0.3em;letter-spacing:0.06em;">FORMATO HTML</p>
+      <ul>
+        <li>Tablas de vocabulario</li>
+        <li>Diálogos guiados</li>
+        <li>Preguntas de opción múltiple</li>
+        <li>Retroalimentación automática</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420" class="scrollable">
+  <h3>Unidad 01 · Muestra de contenido</h3>
+  <h2>Vocabulario de saludos</h2>
+  <table class="vocab-table">
+    <thead>
+      <tr><th>Japonés</th><th>Romaji</th><th>Español</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="jp">こんにちは</td><td class="rom">Konnichiwa</td><td>Hola / Buenas tardes</td></tr>
+      <tr><td class="jp">おはようございます</td><td class="rom">Ohayō gozaimasu</td><td>Buenos días (formal)</td></tr>
+      <tr><td class="jp">こんばんは</td><td class="rom">Konbanwa</td><td>Buenas noches</td></tr>
+      <tr><td class="jp">お元気ですか</td><td class="rom">O-genki desu ka?</td><td>¿Cómo estás?</td></tr>
+      <tr><td class="jp">ありがとうございます</td><td class="rom">Arigatō gozaimasu</td><td>Muchas gracias</td></tr>
+      <tr><td class="jp">さようなら</td><td class="rom">Sayōnara</td><td>Adiós</td></tr>
+      <tr><td class="jp">よろしくお願いします</td><td class="rom">Yoroshiku onegaishimasu</td><td>Encantado/a</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section data-background-color="#141420" class="scrollable">
+  <h3>Unidad 02 · 助詞</h3>
+  <h2>Partículas gramaticales del japonés</h2>
+  <div class="particle-grid">
+    <div class="p-card"><span class="p-char">は</span><span class="p-rom">WA</span><span class="p-desc">Tema de<br>la oración</span></div>
+    <div class="p-card"><span class="p-char">が</span><span class="p-rom">GA</span><span class="p-desc">Sujeto<br>gramatical</span></div>
+    <div class="p-card"><span class="p-char">を</span><span class="p-rom">O</span><span class="p-desc">Objeto<br>directo</span></div>
+    <div class="p-card"><span class="p-char">に</span><span class="p-rom">NI</span><span class="p-desc">Destino /<br>tiempo</span></div>
+    <div class="p-card"><span class="p-char">で</span><span class="p-rom">DE</span><span class="p-desc">Lugar de<br>acción</span></div>
+    <div class="p-card"><span class="p-char">の</span><span class="p-rom">NO</span><span class="p-desc">Posesión /<br>relación</span></div>
+    <div class="p-card"><span class="p-char">と</span><span class="p-rom">TO</span><span class="p-desc">Y /<br>compañía</span></div>
+    <div class="p-card"><span class="p-char">も</span><span class="p-rom">MO</span><span class="p-desc">También</span></div>
+    <div class="p-card"><span class="p-char">から</span><span class="p-rom">KARA</span><span class="p-desc">Desde</span></div>
+    <div class="p-card"><span class="p-char">まで</span><span class="p-rom">MADE</span><span class="p-desc">Hasta</span></div>
+  </div>
+  <p style="margin-top:0.55em;font-size:0.46em;color:var(--gray);">
+    Ejemplo: <span style="font-family:'Noto Serif JP',serif;color:var(--gold);">私<span style="color:var(--red-lt)">は</span>図書館<span style="color:var(--red-lt)">...</span>で</span>本<span style="color:var(--red-lt)">を</span>読みます。</span>
+    &nbsp;<em>Watashi wa toshokan de hon o yomimasu.</em> — "Leo un libro en la biblioteca."
+  </p>
+</section>
+
+<section data-background-color="#141420">
+  <h3>Unidades 03 y 04 · Narrativas interactivas</h3>
+  <h2>Aprendizaje situacional y gamificado</h2>
+  <div class="narr-grid">
+    <div class="narr-card">
+      <span class="narr-label">Twine · Unidad 03</span>
+      <span class="narr-title">🗺️ Un viaje a Japón</span>
+      <ul style="margin-top:0.2em;">
+        <li>Decisiones sobre el viaje por Tokio</li>
+        <li>Frases reales de situaciones de viaje</li>
+        <li>Vocabulario adaptado al contexto</li>
+        <li>Comprensión de enunciados básicos</li>
+      </ul>
+      <p style="margin-top:0.4em;font-size:0.42em;color:var(--gray);">Formato HTML · Harlowe 3 · Sin instalación</p>
+    </div>
+    <div class="narr-card">
+      <span class="narr-label">RenPy · Unidad 04</span>
+      <span class="narr-title">🏯 Misterio en Kioto</span>
+      <ul style="margin-top:0.2em;">
+        <li>Estancia en Kioto con personajes</li>
+        <li>Distintos grados de formalidad</li>
+        <li>Vocabulario por escenario</li>
+        <li>Comprensión del japonés formal</li>
+      </ul>
+      <p style="margin-top:0.4em;font-size:0.42em;color:var(--gray);">Visual novel · PC / Mac / Linux</p>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420" class="scrollable">
+  <h3>Unidad 05 · 試験</h3>
+  <h2>Examen interactivo</h2>
+  <div class="tool-row" style="margin-top:0.6em;">
+    <div class="tool-item">
+      <span class="tool-badge badge-red">Opción múltiple</span>
+      <span class="tool-text"><strong>Pregunta 1</strong> — Identificar el saludo correcto entre cuatro opciones</span>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge badge-red">Completar hueco</span>
+      <span class="tool-text"><strong>Pregunta 2</strong> — Seleccionar la palabra que completa la presentación (inline choice)</span>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge badge-red">Emparejar</span>
+      <span class="tool-text"><strong>Pregunta 3</strong> — Drag &amp; drop: vocabulario japonés ↔ traducción en español</span>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge badge-red">Escritura libre</span>
+      <span class="tool-text"><strong>Pregunta 4</strong> — Escribir en hiragana "¿Cuánto cuesta?" (いくらですか)</span>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge badge-red">Ordenar</span>
+      <span class="tool-text"><strong>Pregunta 5</strong> — Reordenar arrastando las frases de un diálogo</span>
+    </div>
+  </div>
+  <p style="margin-top:0.5em;font-size:0.44em;color:var(--gray);">Generado desde IMS QTI 2.2 · Retroalimentación inmediata · Resultado final con mensaje en japonés</p>
+</section>
+
+<section data-background-color="#141420">
+  <h3>Producción</h3>
+  <h2>Herramientas y materiales generados</h2>
+  <div class="tool-row">
+    <div class="tool-item">
+      <span class="tool-badge badge-red">reveal.js</span>
+      <span class="tool-text"><strong>Esta presentación</strong> — HTML5, 14 diapositivas, tipografía japonesa, diseño editorial.</span>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge badge-gold">Pandoc</span>
+      <span class="tool-text"><strong>HTML + PDF + EPUB</strong> — Ejercicios en PDF y guía de viaje en EPUB generados desde Markdown.</span>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge badge-blue">Twine</span>
+      <span class="tool-text"><strong>Un viaje a Japón</strong> — Narrativa interactiva HTML/Harlowe con 6 pasajes y vocabulario en contexto.</span>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge badge-blue">RenPy</span>
+      <span class="tool-text"><strong>Misterio en Kioto</strong> — Visual novel con personajes, menú de elección y retroalimentación en japonés.</span>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420">
+  <h3>Repositorio y publicación</h3>
+  <h2>GitHub + GitHub Pages</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8em;margin-top:0.5em;">
+    <div>
+      <p style="font-size:0.5em;color:var(--gold);margin-bottom:0.3em;letter-spacing:0.06em;">MARKDOWN — ELEMENTOS USADOS</p>
+      <ul>
+        <li>Encabezados H1–H3 con navegación</li>
+        <li>Tablas de vocabulario</li>
+        <li>Listas de contenido y objetivos</li>
+        <li>Bloques de código y citas</li>
+        <li>Imágenes con texto alternativo</li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-size:0.5em;color:var(--gold);margin-bottom:0.3em;letter-spacing:0.06em;">ESTRUCTURA DEL REPOSITORIO</p>
+      <ul>
+        <li><code style="font-size:0.9em;color:#8dd;">README.md</code> — portada GitHub Pages</li>
+        <li><code style="font-size:0.9em;color:#8dd;">presentacion/</code> — reveal.js</li>
+        <li><code style="font-size:0.9em;color:#8dd;">unidades/</code> — Markdown + HTML + PDF</li>
+        <li><code style="font-size:0.9em;color:#8dd;">anexos/</code> — EPUB</li>
+        <li><code style="font-size:0.9em;color:#8dd;">narrativas/</code> — Twine y RenPy</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420" class="scrollable">
+  <h3>Calidad del curso</h3>
+  <h2>Autoevaluación · Norma UNE 71362</h2>
+  <div class="une-grid">
+    <div class="une-item">
+      <span class="une-cat">Información y presentación</span>
+      <span class="une-text">Objetivos explícitos, nivel básico, autor y fecha identificados, URL pública de GitHub Pages.</span>
+    </div>
+    <div class="une-item">
+      <span class="une-cat">Diseño instruccional</span>
+      <span class="une-text">Secuenciación progresiva, actividades variadas (leer, escribir, escuchar, decidir), diálogos situacionales reales.</span>
+    </div>
+    <div class="une-item">
+      <span class="une-cat">Recursos y actividades</span>
+      <span class="une-text">7 formatos distintos: Markdown, PDF, EPUB, HTML interactivo, Twine, RenPy, SCORM, QTI. Examen autocorregible.</span>
+    </div>
+    <div class="une-item">
+      <span class="une-cat">Aspectos técnicos</span>
+      <span class="une-text">GitHub Pages, formatos abiertos y estándar, multiplataforma, compatible con LMS vía SCORM y QTI 2.2.</span>
+    </div>
+    <div class="une-item">
+      <span class="une-cat">Accesibilidad</span>
+      <span class="une-text">Texto alternativo en imágenes, romaji junto a caracteres japoneses, contraste revisado, navegación por encabezados.</span>
+    </div>
+    <div class="une-item">
+      <span class="une-cat">Aspectos de mejora</span>
+      <span class="une-text">Ampliar a más unidades temáticas, añadir audio de pronunciación, incluir más ejercicios de escritura y kanji.</span>
+    </div>
+  </div>
+</section>
+
+<section data-background-color="#141420">
+  <h3>Conclusiones</h3>
+  <h2>Un curso de japonés básico en GitHub</h2>
+  <ul style="margin-top:0.3em;">
+    <li>Los <strong style="color:var(--gold);">estándares abiertos</strong> (Markdown) garantizan portabilidad y reutilización en cualquier LMS</li>
+    <li>Las <strong style="color:var(--gold);">narrativas interactivas</strong> (Twine + RenPy) aumentan la motivación y el aprendizaje contextual</li>
+    <li><strong style="color:var(--gold);">GitHub como repositorio</strong> ofrece control de versiones, historial y publicación web gratuita e inmediata</li>
+    <li><strong style="color:var(--gold);">Pandoc</strong> demuestra que un único fuente Markdown genera múltiples formatos de salida sin esfuerzo adicional</li>
+    <li>La combinación de formatos responde a distintos <strong style="color:var(--gold);">estilos de aprendizaje</strong>: visual, lector, jugador, oyente</li>
+  </ul>
+</section>
+
+<section data-background-color="#141420" style="position:relative;overflow:hidden;">
+  <div class="close-kanji">語</div>
+  <div style="position:relative;z-index:2;">
+    <h3>Fin de la presentación</h3>
+    <h2>ありがとうございました</h2>
+    <p style="font-size:0.52em;color:var(--gray);font-style:italic;margin-top:0.2em;">
+      Arigatō gozaimashita — Muchas gracias por su atención
+    </p>
+
+    <div class="qr-block" style="margin-top:1.4em;">
+      <span class="qr-label">Portada del curso · GitHub Pages</span>
+      <span class="qr-url">frariv01.github.io/proyecto-final-japones-pmed-francisco-rivas-jimenez</span>
+    </div>
+
+    <p style="margin-top:1em;font-size:0.44em;color:var(--dim);">
+      Francisco Rivas Jiménez &nbsp;·&nbsp;
+      Producción de Materiales Educativos Digitales &nbsp;·&nbsp; 2026
+    </p>
+  </div>
+</section>
+
+</div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  transition: 'fade',
+  transitionSpeed: 'slow',
+  backgroundTransition: 'fade',
+  controls: true,
+  progress: true,
+  center: false,
+  width: 960,
+  height: 600,
+  margin: 0.07,
+  plugins: []
+});
+</script>
+</body>
+</html>
