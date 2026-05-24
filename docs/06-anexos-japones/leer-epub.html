@@ -21,10 +21,11 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
     }
     #status { font-size: 14px; opacity: 0.9; }
     #viewer {
-      height: calc(100vh - 54px);
+      height: calc(100vh - 72px);
       width: 100%;
       background: #111;
     }
@@ -34,7 +35,7 @@
       color: #bbb;
       padding: 10px 12px;
       border-top: 1px solid #333;
-      max-height: 30vh;
+      max-height: 35vh;
       overflow: auto;
       display: none;
     }
@@ -47,12 +48,14 @@
       cursor: pointer;
     }
     button:hover { border-color: #777; }
+    a { color: #9ad; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 </head>
 <body>
   <div id="topbar">
     <button id="toggleLog" type="button">Ver diagnóstico</button>
+    <button id="retry" type="button">Reintentar</button>
     <div id="status">Cargando visor…</div>
   </div>
 
@@ -63,10 +66,10 @@
     const statusEl = document.getElementById('status');
     const logEl = document.getElementById('log');
     const toggleBtn = document.getElementById('toggleLog');
+    const retryBtn = document.getElementById('retry');
 
     function log(msg) {
       logEl.textContent += msg + "\n";
-      // También a consola para depurar
       console.log('[EPUB]', msg);
     }
 
@@ -76,6 +79,11 @@
       log(prefix);
       log(detail);
       logEl.style.display = 'block';
+    }
+
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+      log(msg);
     }
 
     toggleBtn.addEventListener('click', () => {
@@ -90,24 +98,55 @@
       showError('Promesa rechazada (unhandledrejection).', e.reason);
     });
 
-    (async function main() {
+    function getEpubUrl() {
+      // En GitHub Pages, esta página está en:
+      // .../06-anexos-japones/leer-epub.html
+      // El EPUB está en el mismo directorio.
+      return new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
+    }
+
+    async function headCheck(url) {
       try {
+        const r = await fetch(url, { method: 'HEAD' });
+        return { ok: r.ok, status: r.status, contentType: r.headers.get('content-type') };
+      } catch (e) {
+        return { ok: false, status: 'FETCH_ERROR', error: e };
+      }
+    }
+
+    async function loadBook() {
+      try {
+        logEl.textContent = '';
+
         if (typeof ePub !== 'function') {
           showError('No se pudo cargar epub.js (CDN).', 'ePub no está definido');
           return;
         }
 
-        const epubUrl = new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
-        statusEl.textContent = 'Cargando EPUB…';
-        log('Página: ' + window.location.href);
-        log('EPUB URL: ' + epubUrl);
+        const epubUrl = getEpubUrl();
+
+        setStatus('Página: ' + window.location.href);
+        setStatus('EPUB URL: ' + epubUrl);
+
+        // Comprobación rápida para ver si el archivo responde
+        const head = await headCheck(epubUrl);
+        setStatus('HEAD EPUB: ' + JSON.stringify(head));
+        if (!head.ok) {
+          showError('No se puede acceder al EPUB (404 o bloqueo).', 'Prueba abriendo directamente: ' + epubUrl);
+          return;
+        }
+
+        // Nota: epub.js necesita poder hacer fetch del .epub y luego de sus recursos internos.
+        setStatus('Cargando EPUB…');
 
         const book = ePub(epubUrl);
 
-        // Eventos útiles
         book.on('openFailed', (err) => {
           showError('No se pudo abrir el EPUB.', err);
         });
+
+        const viewer = document.getElementById('viewer');
+        viewer.innerHTML = '';
 
         const rendition = book.renderTo('viewer', { width: '100%', height: '100%' });
 
@@ -116,16 +155,15 @@
           log('Render OK: ' + (section && section.href ? section.href : 'section'));
         });
 
-        rendition.on('relocated', (location) => {
-          // Silencioso, pero útil si se quiere ver movimiento
-          // log('Relocated');
-        });
-
         await rendition.display();
       } catch (err) {
         showError('Fallo cargando el visor.', err);
       }
-    })();
+    }
+
+    retryBtn.addEventListener('click', () => loadBook());
+
+    loadBook();
   </script>
 </body>
 </html>
