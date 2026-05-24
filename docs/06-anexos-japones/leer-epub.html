@@ -33,6 +33,8 @@
     }
     #error a { color: #9ad; }
   </style>
+  <!-- epub.js expects JSZip to be available when opening ArrayBuffer/archives -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 </head>
 <body>
@@ -54,6 +56,9 @@
     }
 
     async function main() {
+      if (typeof JSZip === 'undefined') {
+        throw new Error('JSZip lib not loaded');
+      }
       if (typeof ePub !== 'function') {
         throw new Error('No se pudo cargar epub.js (CDN).');
       }
