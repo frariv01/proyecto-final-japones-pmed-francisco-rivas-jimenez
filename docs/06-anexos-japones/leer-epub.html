@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Libro (EPUB)</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: #fff;
+      color: #111;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Simple top bar */
+    #topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #ddd;
+      z-index: 10;
+      user-select: none;
+    }
+    #topbar button {
+      background: #f4f4f4;
+      color: #111;
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #topbar button:hover { border-color: #888; }
+    #hint { font-size: 13px; opacity: 0.85; margin-left: 6px; }
+    #loc { margin-left: auto; font-size: 12px; opacity: 0.7; }
+
+    #viewer {
+      position: fixed;
+      top: 44px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+    }
+
+    /* Click/tap zones for navigation */
+    .nav-zone {
+      position: fixed;
+      top: 44px;
+      bottom: 0;
+      width: 33vw;
+      z-index: 9;
+      background: transparent;
+    }
+    #prevZone { left: 0; }
+    #nextZone { right: 0; }
+
+    #error {
+      position: fixed;
+      inset: 0;
+      display: none;
+      padding: 16px;
+      background: #fff;
+      color: #111;
+      box-sizing: border-box;
+      overflow: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.4;
+      z-index: 20;
+    }
+    #error a { color: #06c; }
+
+    #xmlError {
+      position: fixed;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background: rgba(255, 235, 235, 0.97);
+      border: 1px solid #e3a0a0;
+      color: #7a1b1b;
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: none;
+      z-index: 30;
+      font-size: 13px;
+      line-height: 1.35;
+      max-height: 40vh;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    #xmlError button {
+      float: right;
+      background: transparent;
+      border: 1px solid #c77;
+      color: #7a1b1b;
+      border-radius: 6px;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+  </style>
+
+  <!-- epub.js expects JSZip to be available when opening ArrayBuffer/archives -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+</head>
+<body>
+  <div id="topbar">
+    <button id="prevBtn" type="button" aria-label="Página anterior">◀</button>
+    <button id="nextBtn" type="button" aria-label="Página siguiente">▶</button>
+    <span id="hint">Flechas / clic izquierda-derecha / swipe</span>
+    <span id="loc"></span>
+  </div>
+
+  <div id="viewer"></div>
+  <div id="prevZone" class="nav-zone" aria-hidden="true"></div>
+  <div id="nextZone" class="nav-zone" aria-hidden="true"></div>
+
+  <pre id="error"></pre>
+  <div id="xmlError"><button id="closeXmlError" type="button">Cerrar</button><div id="xmlErrorText"></div></div>
+
+  <script>
+    const viewerId = 'viewer';
+    const errorEl = document.getElementById('error');
+    const locEl = document.getElementById('loc');
+
+    const xmlErrorEl = document.getElementById('xmlError');
+    const xmlErrorTextEl = document.getElementById('xmlErrorText');
+    document.getElementById('closeXmlError').addEventListener('click', () => {
+      xmlErrorEl.style.display = 'none';
+      xmlErrorTextEl.textContent = '';
+    });
+
+    let rendition = null;
+
+    function showError(err) {
+      const msg = err && (err.stack || err.message) ? (err.stack || err.message) : String(err);
+      const epubUrl = new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
+      errorEl.style.display = 'block';
+      errorEl.textContent =
+        'No se pudo abrir el libro.\n\n' +
+        msg + '\n\n' +
+        'Prueba a abrir el EPUB directamente:\n' + epubUrl + '\n';
+    }
+
+    function wireNavigation() {
+      const prev = () => rendition && rendition.prev();
+      const next = () => rendition && rendition.next();
+
+      document.getElementById('prevBtn').addEventListener('click', prev);
+      document.getElementById('nextBtn').addEventListener('click', next);
+      document.getElementById('prevZone').addEventListener('click', prev);
+      document.getElementById('nextZone').addEventListener('click', next);
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (!rendition) return;
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prev();
+        } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault();
+          next();
+        }
+      });
+
+      // Basic swipe support (touch)
+      let touchStartX = null;
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length) touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+      window.addEventListener('touchend', (e) => {
+        if (touchStartX === null || !rendition) return;
+        const endX = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0].clientX : null;
+        if (endX === null) return;
+        const dx = endX - touchStartX;
+        touchStartX = null;
+        if (Math.abs(dx) < 40) return;
+        if (dx > 0) prev(); else next();
+      }, { passive: true });
+    }
+
+    function applyWhiteThemeToContents() {
+      if (!rendition) return;
+      // Force a readable theme inside the iframe contents
+      rendition.themes.register('light', {
+        'body': {
+          'background': '#ffffff !important',
+          'color': '#111111 !important'
+        },
+        '*': {
+          'color': '#111111 !important'
+        },
+        'a': {
+          'color': '#0645ad !important'
+        }
+      });
+      rendition.themes.select('light');
+    }
+
+    function detectAndShowXhtmlParseError() {
+      try {
+        // epub.js renders each section inside an iframe inside #viewer
+        const iframe = document.querySelector('#viewer iframe');
+        if (!iframe || !iframe.contentDocument) return;
+
+        const doc = iframe.contentDocument;
+        const title = (doc.title || '').toLowerCase();
+        const bodyText = (doc.body && doc.body.innerText) ? doc.body.innerText : '';
+
+        // This is the browser's built-in XML error page for invalid XHTML.
+        const looksLikeXmlError = title.includes('xml') || bodyText.includes('This page contains the following errors:');
+        if (!looksLikeXmlError) {
+          xmlErrorEl.style.display = 'none';
+          xmlErrorTextEl.textContent = '';
+          return;
+        }
+
+        xmlErrorTextEl.textContent =
+          'Este capítulo del EPUB parece tener XHTML/XML inválido (por eso el navegador muestra la página roja de error).\n\n' +
+          'No es un fallo de tu visor: es un error de marcado dentro del propio libro.\n\n' +
+          'Puedes:\n' +
+          '- pasar a la siguiente página/capítulo con ▶, o\n' +
+          '- corregir el XHTML dentro del EPUB y volver a generar el archivo.\n\n' +
+          'Detalle que reporta el navegador:\n' + bodyText;
+        xmlErrorEl.style.display = 'block';
+      } catch (e) {
+        // If we can't access the iframe document, ignore.
+      }
+    }
+
+    async function main() {
+      if (typeof JSZip === 'undefined') throw new Error('JSZip lib not loaded');
+      if (typeof ePub !== 'function') throw new Error('No se pudo cargar epub.js (CDN).');
+
+      const epubUrl = new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
+
+      const resp = await fetch(epubUrl, { cache: 'no-store' });
+      if (!resp.ok) throw new Error('No se pudo descargar el EPUB. HTTP ' + resp.status);
+
+      const buf = await resp.arrayBuffer();
+      const book = ePub(buf);
+
+      rendition = book.renderTo(viewerId, {
+        width: '100%',
+        height: '100%',
+        spread: 'none'
+      });
+
+      // Apply theme ASAP and also after every render
+      applyWhiteThemeToContents();
+      rendition.on('rendered', () => {
+        applyWhiteThemeToContents();
+        // Some sections may be invalid XHTML. Detect and show a friendly warning.
+        // Delay slightly so iframe has content.
+        setTimeout(detectAndShowXhtmlParseError, 50);
+      });
+
+      // Update simple location indicator
+      rendition.on('relocated', (location) => {
+        try {
+          const cfi = location && location.start && location.start.cfi ? location.start.cfi : '';
+          locEl.textContent = cfi ? 'Posición: ' + cfi : '';
+        } catch (_) {
+          locEl.textContent = '';
+        }
+      });
+
+      wireNavigation();
+      await rendition.display();
+    }
+
+    main().catch(showError);
+  </script>
+</body>
+</html>
