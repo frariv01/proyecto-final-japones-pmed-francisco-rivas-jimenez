@@ -1,7 +1,7 @@
 * [Inicio](README.md)
 
 * **0: Presentación**
-  * [Presentación](00-presentacion/presentacion-japones-pmed.html)
+  * <a href="00-presentacion/presentacion-japones-pmed.html" target="_blank" rel="noopener">Presentación</a>
 
 * **1: Conversaciones cotidianas**
   * [Conversaciones cotidianas en japonés](01-conversaciones-cotidianas-japones/conversaciones-cotidianas-japones.md)
