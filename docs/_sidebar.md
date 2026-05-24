@@ -1,5 +1,8 @@
 * [Inicio](README.md)
 
+* **0: Presentación**
+  * [Presentación](00-presentacion/presentacion-japones-pmed.html)
+
 * **1: Conversaciones cotidianas**
   * [Conversaciones cotidianas en japonés](01-conversaciones-cotidianas-japones/conversaciones-cotidianas-japones.md)
   * [Diálogos y ejercicios en japonés](01-conversaciones-cotidianas-japones/dialogos-ejercicios-japones.html)
