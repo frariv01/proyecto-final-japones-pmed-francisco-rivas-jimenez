@@ -35,7 +35,7 @@
       color: #bbb;
       padding: 10px 12px;
       border-top: 1px solid #333;
-      max-height: 35vh;
+      max-height: 40vh;
       overflow: auto;
       display: none;
     }
@@ -99,18 +99,27 @@
     });
 
     function getEpubUrl() {
-      // En GitHub Pages, esta página está en:
-      // .../06-anexos-japones/leer-epub.html
-      // El EPUB está en el mismo directorio.
       return new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
     }
 
-    async function headCheck(url) {
+    async function probeUrl(url) {
+      // En GitHub Pages, HEAD a veces no devuelve headers útiles.
+      // Hacemos un GET con Range=0-0 para validar acceso sin bajar todo el fichero.
       try {
-        const r = await fetch(url, { method: 'HEAD' });
-        return { ok: r.ok, status: r.status, contentType: r.headers.get('content-type') };
+        const r = await fetch(url, {
+          method: 'GET',
+          headers: { Range: 'bytes=0-0' },
+          cache: 'no-store'
+        });
+        return {
+          ok: r.ok,
+          status: r.status,
+          contentType: r.headers.get('content-type'),
+          acceptRanges: r.headers.get('accept-ranges'),
+          contentRange: r.headers.get('content-range'),
+        };
       } catch (e) {
-        return { ok: false, status: 'FETCH_ERROR', error: e };
+        return { ok: false, status: 'FETCH_ERROR', error: String(e) };
       }
     }
 
@@ -128,20 +137,34 @@
         setStatus('Página: ' + window.location.href);
         setStatus('EPUB URL: ' + epubUrl);
 
-        // Comprobación rápida para ver si el archivo responde
-        const head = await headCheck(epubUrl);
-        setStatus('HEAD EPUB: ' + JSON.stringify(head));
-        if (!head.ok) {
-          showError('No se puede acceder al EPUB (404 o bloqueo).', 'Prueba abriendo directamente: ' + epubUrl);
+        const probe = await probeUrl(epubUrl);
+        setStatus('PROBE EPUB: ' + JSON.stringify(probe));
+
+        if (!probe.ok) {
+          showError('No se puede acceder al EPUB (404/bloqueo).', 'Prueba abriendo directamente: ' + epubUrl);
           return;
         }
 
-        // Nota: epub.js necesita poder hacer fetch del .epub y luego de sus recursos internos.
-        setStatus('Cargando EPUB…');
+        // Si el servidor lo sirve como HTML (p.ej. 404 page) lo detectamos
+        if (probe.contentType && probe.contentType.includes('text/html')) {
+          showError('El EPUB no se está sirviendo como archivo (parece HTML).', 'Content-Type=' + probe.contentType);
+          return;
+        }
+
+        setStatus('Cargando EPUB con epub.js…');
 
         const book = ePub(epubUrl);
 
-        book.on('openFailed', (err) => {
+        book.on('openFailed', async (err) => {
+          // Intento de diagnóstico extra: leer primeras bytes para confirmar que es ZIP/EPUB (empieza por PK)
+          try {
+            const r = await fetch(epubUrl, { headers: { Range: 'bytes=0-3' }, cache: 'no-store' });
+            const buf = await r.arrayBuffer();
+            const bytes = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join(' ');
+            log('EPUB first bytes: ' + bytes + ' (esperado: 50 4b 03 04)');
+          } catch (e) {
+            log('No se pudo leer bytes iniciales: ' + String(e));
+          }
           showError('No se pudo abrir el EPUB.', err);
         });
 
