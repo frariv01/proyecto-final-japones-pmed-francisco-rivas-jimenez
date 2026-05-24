@@ -17,4 +17,4 @@
   * <a href="05-examen-japones/examen-japones.html" target="_blank" rel="noopener">Examen Interactivo</a>
 
 * **6: Anexos**
-  * <a href="06-anexos-japones/sobrevivir-en-tokio.epub" target="_blank" rel="noopener">Libro</a>
+  * <a href="06-anexos-japones/leer-epub.html" target="_blank" rel="noopener">Libro (visor)</a>
