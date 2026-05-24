@@ -6,18 +6,126 @@
   <title>Libro (EPUB)</title>
   <style>
     html, body { height: 100%; margin: 0; }
-    #viewer { height: 100vh; width: 100%; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #111;
+      color: #eee;
+    }
+    #topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #111;
+      border-bottom: 1px solid #333;
+      padding: 10px 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    #status { font-size: 14px; opacity: 0.9; }
+    #viewer {
+      height: calc(100vh - 54px);
+      width: 100%;
+      background: #111;
+    }
+    #log {
+      white-space: pre-wrap;
+      font-size: 12px;
+      color: #bbb;
+      padding: 10px 12px;
+      border-top: 1px solid #333;
+      max-height: 30vh;
+      overflow: auto;
+      display: none;
+    }
+    button {
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { border-color: #777; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 </head>
 <body>
+  <div id="topbar">
+    <button id="toggleLog" type="button">Ver diagnóstico</button>
+    <div id="status">Cargando visor…</div>
+  </div>
+
   <div id="viewer"></div>
+  <pre id="log"></pre>
 
   <script>
-    // Ruta relativa desde este HTML hacia el EPUB
-    const book = ePub("sobrevivir-en-tokio.epub");
-    const rendition = book.renderTo("viewer", { width: "100%", height: "100%" });
-    rendition.display();
+    const statusEl = document.getElementById('status');
+    const logEl = document.getElementById('log');
+    const toggleBtn = document.getElementById('toggleLog');
+
+    function log(msg) {
+      logEl.textContent += msg + "\n";
+      // También a consola para depurar
+      console.log('[EPUB]', msg);
+    }
+
+    function showError(prefix, err) {
+      const detail = (err && (err.stack || err.message)) ? (err.stack || err.message) : String(err);
+      statusEl.textContent = prefix;
+      log(prefix);
+      log(detail);
+      logEl.style.display = 'block';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      logEl.style.display = (logEl.style.display === 'none' || !logEl.style.display) ? 'block' : 'none';
+    });
+
+    window.addEventListener('error', (e) => {
+      showError('Error JavaScript detectado.', e.error || e.message);
+    });
+
+    window.addEventListener('unhandledrejection', (e) => {
+      showError('Promesa rechazada (unhandledrejection).', e.reason);
+    });
+
+    (async function main() {
+      try {
+        if (typeof ePub !== 'function') {
+          showError('No se pudo cargar epub.js (CDN).', 'ePub no está definido');
+          return;
+        }
+
+        const epubUrl = new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
+        statusEl.textContent = 'Cargando EPUB…';
+        log('Página: ' + window.location.href);
+        log('EPUB URL: ' + epubUrl);
+
+        const book = ePub(epubUrl);
+
+        // Eventos útiles
+        book.on('openFailed', (err) => {
+          showError('No se pudo abrir el EPUB.', err);
+        });
+
+        const rendition = book.renderTo('viewer', { width: '100%', height: '100%' });
+
+        rendition.on('rendered', (section) => {
+          statusEl.textContent = 'Listo.';
+          log('Render OK: ' + (section && section.href ? section.href : 'section'));
+        });
+
+        rendition.on('relocated', (location) => {
+          // Silencioso, pero útil si se quiere ver movimiento
+          // log('Relocated');
+        });
+
+        await rendition.display();
+      } catch (err) {
+        showError('Fallo cargando el visor.', err);
+      }
+    })();
   </script>
 </body>
 </html>
