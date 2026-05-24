@@ -103,8 +103,6 @@
     }
 
     async function probeUrl(url) {
-      // En GitHub Pages, HEAD a veces no devuelve headers útiles.
-      // Hacemos un GET con Range=0-0 para validar acceso sin bajar todo el fichero.
       try {
         const r = await fetch(url, {
           method: 'GET',
@@ -145,28 +143,23 @@
           return;
         }
 
-        // Si el servidor lo sirve como HTML (p.ej. 404 page) lo detectamos
         if (probe.contentType && probe.contentType.includes('text/html')) {
           showError('El EPUB no se está sirviendo como archivo (parece HTML).', 'Content-Type=' + probe.contentType);
           return;
         }
 
-        setStatus('Cargando EPUB con epub.js…');
+        setStatus('Descargando EPUB (ArrayBuffer)…');
+        const resp = await fetch(epubUrl, { cache: 'no-store' });
+        if (!resp.ok) {
+          showError('No se pudo descargar el EPUB.', 'HTTP ' + resp.status);
+          return;
+        }
+        const buf = await resp.arrayBuffer();
+        const firstBytes = Array.from(new Uint8Array(buf.slice(0,4))).map(b => b.toString(16).padStart(2,'0')).join(' ');
+        log('EPUB first bytes (buffer): ' + firstBytes + ' (esperado: 50 4b 03 04)');
 
-        const book = ePub(epubUrl);
-
-        book.on('openFailed', async (err) => {
-          // Intento de diagnóstico extra: leer primeras bytes para confirmar que es ZIP/EPUB (empieza por PK)
-          try {
-            const r = await fetch(epubUrl, { headers: { Range: 'bytes=0-3' }, cache: 'no-store' });
-            const buf = await r.arrayBuffer();
-            const bytes = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join(' ');
-            log('EPUB first bytes: ' + bytes + ' (esperado: 50 4b 03 04)');
-          } catch (e) {
-            log('No se pudo leer bytes iniciales: ' + String(e));
-          }
-          showError('No se pudo abrir el EPUB.', err);
-        });
+        setStatus('Abriendo EPUB…');
+        const book = ePub(buf);
 
         const viewer = document.getElementById('viewer');
         viewer.innerHTML = '';
@@ -178,6 +171,7 @@
           log('Render OK: ' + (section && section.href ? section.href : 'section'));
         });
 
+        // Si el display falla, veremos el error en catch
         await rendition.display();
       } catch (err) {
         showError('Fallo cargando el visor.', err);
