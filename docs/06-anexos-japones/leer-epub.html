@@ -5,182 +5,79 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Libro (EPUB)</title>
   <style>
-    html, body { height: 100%; margin: 0; }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
+      background: #111;
+      color: #eee;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: #111;
-      color: #eee;
     }
-    #topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: #111;
-      border-bottom: 1px solid #333;
-      padding: 10px 12px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    #status { font-size: 14px; opacity: 0.9; }
     #viewer {
-      height: calc(100vh - 72px);
-      width: 100%;
-      background: #111;
+      height: 100vh;
+      width: 100vw;
     }
-    #log {
-      white-space: pre-wrap;
-      font-size: 12px;
-      color: #bbb;
-      padding: 10px 12px;
-      border-top: 1px solid #333;
-      max-height: 40vh;
-      overflow: auto;
+    #error {
+      position: fixed;
+      inset: 0;
       display: none;
-    }
-    button {
-      background: #222;
+      padding: 16px;
+      background: #111;
       color: #eee;
-      border: 1px solid #444;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
+      box-sizing: border-box;
+      overflow: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.4;
     }
-    button:hover { border-color: #777; }
-    a { color: #9ad; }
+    #error a { color: #9ad; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 </head>
 <body>
-  <div id="topbar">
-    <button id="toggleLog" type="button">Ver diagnóstico</button>
-    <button id="retry" type="button">Reintentar</button>
-    <div id="status">Cargando visor…</div>
-  </div>
-
   <div id="viewer"></div>
-  <pre id="log"></pre>
+  <pre id="error"></pre>
 
   <script>
-    const statusEl = document.getElementById('status');
-    const logEl = document.getElementById('log');
-    const toggleBtn = document.getElementById('toggleLog');
-    const retryBtn = document.getElementById('retry');
+    const viewerId = 'viewer';
+    const errorEl = document.getElementById('error');
 
-    function log(msg) {
-      logEl.textContent += msg + "\n";
-      console.log('[EPUB]', msg);
+    function showError(err) {
+      const msg = err && (err.stack || err.message) ? (err.stack || err.message) : String(err);
+      const epubUrl = new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
+      errorEl.style.display = 'block';
+      errorEl.textContent =
+        'No se pudo abrir el libro.\n\n' +
+        msg + '\n\n' +
+        'Prueba a abrir el EPUB directamente:\n' + epubUrl + '\n';
     }
 
-    function showError(prefix, err) {
-      const detail = (err && (err.stack || err.message)) ? (err.stack || err.message) : String(err);
-      statusEl.textContent = prefix;
-      log(prefix);
-      log(detail);
-      logEl.style.display = 'block';
-    }
-
-    function setStatus(msg) {
-      statusEl.textContent = msg;
-      log(msg);
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      logEl.style.display = (logEl.style.display === 'none' || !logEl.style.display) ? 'block' : 'none';
-    });
-
-    window.addEventListener('error', (e) => {
-      showError('Error JavaScript detectado.', e.error || e.message);
-    });
-
-    window.addEventListener('unhandledrejection', (e) => {
-      showError('Promesa rechazada (unhandledrejection).', e.reason);
-    });
-
-    function getEpubUrl() {
-      return new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
-    }
-
-    async function probeUrl(url) {
-      try {
-        const r = await fetch(url, {
-          method: 'GET',
-          headers: { Range: 'bytes=0-0' },
-          cache: 'no-store'
-        });
-        return {
-          ok: r.ok,
-          status: r.status,
-          contentType: r.headers.get('content-type'),
-          acceptRanges: r.headers.get('accept-ranges'),
-          contentRange: r.headers.get('content-range'),
-        };
-      } catch (e) {
-        return { ok: false, status: 'FETCH_ERROR', error: String(e) };
+    async function main() {
+      if (typeof ePub !== 'function') {
+        throw new Error('No se pudo cargar epub.js (CDN).');
       }
-    }
 
-    async function loadBook() {
-      try {
-        logEl.textContent = '';
+      const epubUrl = new URL('sobrevivir-en-tokio.epub', window.location.href).toString();
 
-        if (typeof ePub !== 'function') {
-          showError('No se pudo cargar epub.js (CDN).', 'ePub no está definido');
-          return;
-        }
-
-        const epubUrl = getEpubUrl();
-
-        setStatus('Página: ' + window.location.href);
-        setStatus('EPUB URL: ' + epubUrl);
-
-        const probe = await probeUrl(epubUrl);
-        setStatus('PROBE EPUB: ' + JSON.stringify(probe));
-
-        if (!probe.ok) {
-          showError('No se puede acceder al EPUB (404/bloqueo).', 'Prueba abriendo directamente: ' + epubUrl);
-          return;
-        }
-
-        if (probe.contentType && probe.contentType.includes('text/html')) {
-          showError('El EPUB no se está sirviendo como archivo (parece HTML).', 'Content-Type=' + probe.contentType);
-          return;
-        }
-
-        setStatus('Descargando EPUB (ArrayBuffer)…');
-        const resp = await fetch(epubUrl, { cache: 'no-store' });
-        if (!resp.ok) {
-          showError('No se pudo descargar el EPUB.', 'HTTP ' + resp.status);
-          return;
-        }
-        const buf = await resp.arrayBuffer();
-        const firstBytes = Array.from(new Uint8Array(buf.slice(0,4))).map(b => b.toString(16).padStart(2,'0')).join(' ');
-        log('EPUB first bytes (buffer): ' + firstBytes + ' (esperado: 50 4b 03 04)');
-
-        setStatus('Abriendo EPUB…');
-        const book = ePub(buf);
-
-        const viewer = document.getElementById('viewer');
-        viewer.innerHTML = '';
-
-        const rendition = book.renderTo('viewer', { width: '100%', height: '100%' });
-
-        rendition.on('rendered', (section) => {
-          statusEl.textContent = 'Listo.';
-          log('Render OK: ' + (section && section.href ? section.href : 'section'));
-        });
-
-        // Si el display falla, veremos el error en catch
-        await rendition.display();
-      } catch (err) {
-        showError('Fallo cargando el visor.', err);
+      // Cargar como ArrayBuffer para máxima compatibilidad en GitHub Pages
+      const resp = await fetch(epubUrl, { cache: 'no-store' });
+      if (!resp.ok) {
+        throw new Error('No se pudo descargar el EPUB. HTTP ' + resp.status);
       }
+
+      const buf = await resp.arrayBuffer();
+      const book = ePub(buf);
+
+      const rendition = book.renderTo(viewerId, {
+        width: '100%',
+        height: '100%'
+      });
+
+      await rendition.display();
     }
 
-    retryBtn.addEventListener('click', () => loadBook());
-
-    loadBook();
+    main().catch(showError);
   </script>
 </body>
 </html>
