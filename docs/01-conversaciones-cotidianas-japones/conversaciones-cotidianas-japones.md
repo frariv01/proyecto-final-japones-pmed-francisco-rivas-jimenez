@@ -138,5 +138,3 @@ Escribir un diálogo corto (4–6 líneas) usando al menos 5 palabras del vocabu
 ---
 
 [Enlace al ejercicio](https://frariv01.github.io/proyecto-final-japones-pmed-francisco-rivas-jimenez/01-conversaciones-cotidianas-japones/dialogos-ejercicios-japones.html ':target=_blank')
-
-[Volver al inicio](../README.md)
