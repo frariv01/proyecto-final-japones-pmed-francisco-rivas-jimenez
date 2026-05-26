@@ -256,4 +256,4 @@ Traduce al japonés:
 Otsukaresama desu!
 ¡Buen trabajo!
 
-[Volver al inicio](docs/README.md)
+[Volver al inicio](../README.md)
