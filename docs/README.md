@@ -58,7 +58,7 @@ Aventura interactiva creada en Ren'Py donde el estudiante:
 - Aprende vocabulario correspondiente a cada escenario
 - Practica la comprensión del japonés formal
 
-* <a href="04-novela-visual-japones/MisterioEnKioto-1.0-web/index.html" target="_blank" rel="noopener">Acceder</a>
+<a href="04-novela-visual-japones/MisterioEnKioto-1.0-web/index.html" target="_blank" rel="noopener">Acceder</a>
 
 ---
 
