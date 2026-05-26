@@ -255,5 +255,3 @@ Traduce al japonés:
 お疲れ様です！
 Otsukaresama desu!
 ¡Buen trabajo!
-
-[Volver al inicio](../README.md)
