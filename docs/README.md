@@ -18,6 +18,8 @@ Material HTML con:
 - Preguntas de opción múltiple
 - Retroalimentación automática
 
+[Acceder](01-conversaciones-cotidianas-japones/conversaciones-cotidianas-japones.md)
+
 ---
 
 ### 2. Partículas gramaticales del japonés
@@ -34,6 +36,8 @@ Repaso gramatical de:
 
 Incluye ejemplos y ejercicios de traducción.
 
+[Acceder](02-particulas-gramaticales-japones/particulas-japones-repaso-ejercicio.md)
+
 ---
 
 ### 3. Narrativa: Un viaje a Japón
@@ -42,6 +46,8 @@ Aventura interactiva creada en HTML/Twine donde el estudiante:
 - Lee frases utilizadas en viajes en japonés
 - Aprende vocabulario adaptado a la siuación
 - Practica la comprensión de enunciados básicos
+
+<a href="03-narrativa-japones/un-viaje-a-japon-historia-interactiva.html" target="_blank" rel="noopener">Acceder</a>
 
 ---
 
@@ -52,10 +58,14 @@ Aventura interactiva creada en Ren'Py donde el estudiante:
 - Aprende vocabulario correspondiente a cada escenario
 - Practica la comprensión del japonés formal
 
+* <a href="04-novela-visual-japones/MisterioEnKioto-1.0-web/index.html" target="_blank" rel="noopener">Acceder</a>
+
 ---
 
 ### 5. Examen Interactivo
 Un examen interactivo para comprobar la adquisición de los contenidos presentados.
+
+<a href="05-examen-japones/examen-japones.html" target="_blank" rel="noopener">Acceder</a>
 
 ---
 
@@ -65,6 +75,9 @@ Un libro que contiene una guía de supervivencia con frases y vocabulario básic
 - Repasa conceptos como números o días de la semana
 - Conoce vocabulario imprescindible para viajar
 - Obtén información adicional sobre el estudio del japonés
+
+<a href="06-anexos-japones/leer-epub.html" target="_blank" rel="noopener">Acceder</a>
+
 ---
 
 # 🎯 Objetivos del curso
